@@ -1,0 +1,321 @@
+
+     src >
+          = index.html
+          = main.jsx
+          = App.jsx 
+
+     src > components
+     =CardOne.jsx 
+          import React from "react";
+
+          function CardOne(){
+               return <h3>I am card one</h3>
+          }
+
+          export default CardOne;
+
+     =main.jsx 
+          import CardOne from './components/CardOne.jsx'
+
+          ReactDOM.createRoot(document.getElementById('root')).render(
+               <React.StrictMode>
+                    {/* <App /> */}
+
+                    <CardOne/>
+               
+               </React.StrictMode>,
+          )
+
+
+     =>Functional Component & Class Component 
+          =In CardOne.jsx 
+               // import React from "react";
+
+               // function CardOne(){
+               //      return <h3>I am card one</h3>
+               // }
+
+               // export default CardOne;
+
+
+
+
+               // import React from "react";
+
+               // function CardOne(){
+               //      return React.createElement(
+               //           "h1",
+               //           null,
+               //           "I am card one"
+               //      )
+               // }
+
+               // export default CardOne;
+
+               // - function component directly return
+
+
+
+               import React from "react";
+
+               class CardOne extends React.Component{
+                    render(){
+                         return <h3>I am card one</h3>
+                    }
+               }
+
+               export default CardOne;
+               // - class component
+               //        extends  React.Component
+               //        firstly render() and return
+
+     =>Direct Export 
+          =In CardTwo.jsx 
+               // import React from "react";
+
+               // export default function CardTwo(){
+               //      return <h4>I am card two.</h4>
+               // }
+
+               import React from "react";
+
+               export default class CardTwo extends React.Component{
+                    render(){
+                         return <h4>I am card two.</h4>
+                    }
+               }
+     
+     =In CardThree.jsx
+          import React from "react"
+
+          const CardThree = function(){
+               return <h3>I am card three</h3>
+          }
+
+          export default CardThree;          
+
+          // - Anonymous function 
+
+
+
+          import React,{Component} from "react"
+
+          class CardThree extends Component{
+               render(){
+                    return <h3>I am card three</h3>
+               }
+          }
+
+          export default CardThree;
+
+     =>Component Module 
+          // import React from "react"; 
+
+          // const CardFour = ()=>{
+          //      return <h3>I am a card four</h3>
+          // }
+
+          // export default CardFour;
+
+
+
+
+          // import React from "react"; 
+
+          // const CardFour = ()=>(<h3>I am a card four</h3>)
+
+          // export default CardFour;
+
+
+
+          import React,{Component} from "react"; 
+
+          class CardFour extends Component{
+               render(){
+                    return <h3>I am a card four</h3>
+               }
+          }
+
+          export default CardFour;
+
+     =>Fragment Module 
+          import React,{Fragment} from "react"
+
+          export default function CardFive(){
+               const greeting = "I am card five again by variable";
+               return (
+                    // <div>
+                    //      <h5>I am card five</h5>
+                    //      <h5>I am card five again</h5>
+                    // </div>
+
+                    // <>
+                    //      <h5>I am card five</h5>
+                    //      <h5>I am card five again</h5>
+                    //      <h5>{greeting}</h5>
+                    // </>
+
+                    // <React.StrictMode>
+                    //      <h5>I am card five</h5>
+                    //      <h5>I am card five again</h5>
+                    //      <h5>{greeting}</h5>
+                    // </React.StrictMode>
+
+                    // <React.Fragment>
+                    //      <h5>I am card five</h5>
+                    //      <h5>I am card five again</h5>
+                    //      <h5>{greeting}</h5>
+                    // </React.Fragment>
+
+                    <Fragment>
+                         <h5>I am card five</h5>
+                         <h5>I am card five again</h5>
+                         <h5>{greeting}</h5>
+                    </Fragment>
+               )
+          }
+
+
+
+          import React,{Component,Fragment} from "react"
+
+          export default class CardFive extends Component{
+               render(){
+                    const greeting = "I am card five again by variable";
+               
+                    return( 
+                         // <div>
+                         //      <h5>I am card five</h5>
+                         //      <h5>I am card five again</h5>
+                         // </div>
+
+                         // <>
+                         //      <h5>I am card five</h5>
+                         //      <h5>I am card five again</h5>
+                         //      <h5>{greeting}</h5>
+                         // </>
+
+                         // <React.StrictMode>
+                         //      <h5>I am card five</h5>
+                         //      <h5>I am card five again</h5>
+                         //      <h5>{greeting}</h5>
+                         // </React.StrictMode>
+
+                         // <React.Fragment>
+                         //      <h5>I am card five</h5>
+                         //      <h5>I am card five again</h5>
+                         //      <h5>{greeting}</h5>
+                         // </React.Fragment>
+
+                         <Fragment>
+                              <h5>I am card five</h5>
+                              <h5>I am card five again</h5>
+                              <h5>{greeting}</h5>
+                         </Fragment>
+                    )
+               }
+          }
+
+
+
+     =>Ractjs Inline Style 
+     <h4 style={ {color:"steelblue"} }>
+     <button style={ {color:"steelblue",fontStyle:"italic"} }>
+     - css style block as object
+
+
+     =>Ractjs Internal Style With Functional Compo
+          =In CardSix.jsx
+               const internalstyle = {
+               backgroundColor:"gray",
+               color:"orange",
+               padding:"10px"
+               };
+               return ( - declare variables before return
+
+               <h4 style={ internalstyle }>Hello Earch, Welcome to our class </h4>
+               <button style={ internalstyle }>Click Me</button> 
+
+
+               const objectstyle = {
+                    skb:{backgroundColor:"skyblue"},
+                    vlt:{backgroundColor:"violet"},
+                    org:{backgroundColor:"orange"},
+               }
+               const getorangecolor = "org";
+
+               <p style={objectstyle.skb}>Thaks You</p>
+               <p style={objectstyle["vlt"]}>Regards</p>
+               <p style={objectstyle[getorangecolor]}>Bye Bye</p> 
+
+     =>React External Style With Functional Compo
+          components > CardSix.css 
+               h3{
+                    color:red;
+               }
+
+               h5{
+                    color:blue;
+               }
+
+               .myexstyle{
+                    color: green;
+                    text-decoration:underline;
+                    font: 18px;
+               }
+
+          
+          =In CardSix.jsx 
+               <h3>Hello Man, Welcome to our app </h3>
+               <h5>Hello Guys, Welcome to our app </h5>
+               <h6>Hello Girls, Welcome to our app </h6>=
+
+               <button className="myexstyle">Click Me</button>
+
+     =>Reactjs Internal Style and External Style With Class Compo
+
+          =In CardSix.css 
+               // Css codes 
+
+          =In CardSix.jsx 
+               
+               import React from "react";
+               import "./CardSix.css";
+
+               export default class CardSix extends React.Component{
+                    render(){
+                         const internalstyle = {
+                              backgroundColor:"gray",
+                              color:"orange",
+                              padding:"10px"
+                         };
+                    
+                         const objectstyle = {
+                              skb:{backgroundColor:"skyblue"},
+                              vlt:{backgroundColor:"violet"},
+                              org:{backgroundColor:"orange"},
+                         }
+                         const getorangecolor = "org";
+                         return (
+                              <div>
+                                   <h4 style={{color:"steelblue"}}>Hello World, Welcome to our app </h4>
+                                   <button style={{color:"steelblue",fontStyle:"italic"}}>Click Me</button>
+                    
+                                   <h4 style={ internalstyle }>Hello Earch, Welcome to our class </h4>
+                                   <button style={ internalstyle }>Click Me</button>
+                    
+                                   <h3>Hello Man, Welcome to our app </h3>
+                                   <h5>Hello Guys, Welcome to our app </h5>
+                                   <h6>Hello Girls, Welcome to our app </h6>
+                    
+                                   <p style={objectstyle.skb}>Thaks You</p>
+                                   <p style={objectstyle["vlt"]}>Regards</p>
+                                   <p style={objectstyle[getorangecolor]}>Bye Bye</p>
+                    
+                    
+                                   <button className="myexstyle">Click Me</button>
+                    
+                              </div>
+                         );
+                    }
+               }

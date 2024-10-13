@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+     <head>
+          <title>Element with babel</title>
+     </head>
+     <body>
+          <div id="root"></div>
+          
+          <script crossorigin="" src="https://unpkg.com/react@18/umd/react.development.js"></script>
+          <script crossorigin="" src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+          <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+          <script type="text/babel">
+
+               const button = <input type="button" id="btn" className="btn" value="Clck Me"/>;
+
+               const root = ReactDOM.createRoot(document.getElementById("root"))
+               root.render(button);
+          </script>
+     </body>
+</html>
+
+<!-- 
+     =Chrome's Element
+          <div id="root">
+               <input type="button" id="btn" class="btn" value="Clck Me">
+          </div>
+
+     *In React html attribute class="" equal className
+     *input tag must end up with / back slash
+-->

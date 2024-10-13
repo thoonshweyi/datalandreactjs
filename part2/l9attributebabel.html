@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+     <head>
+          <title>Working with babel - Attribute</title>
+     </head>
+     <body>
+          <h1>Form Intro</h1>
+          <div className="form-group">
+               <label for="name">Name</label>
+               <input type="text" id="name" className="form-control" placeholder="Enter your full name"  />
+          </div>
+
+          <div id="root"></div>
+          
+          <script crossorigin="" src="https://unpkg.com/react@18/umd/react.development.js"></script>
+          <script crossorigin="" src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+          <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+          <script type="text/babel">
+
+               // const formgroup = (
+               //      <div className="form-group">
+               //           <label for="">City</label>
+               //           <input type="text" id="city" className="form-control" placeholder="Enter your city"  />
+               //      </div>
+               // );
+               // *recommend syntax - using round bracket to write for react with babel.
+
+               const inputcity = React.createElement(
+                    "input",
+                    {type:"text",name:"city",id:"city",className:"form-control",placeholder:"Enter your city"}
+               );
+               const formgroup = (
+                    <div className="form-group">
+                         <label htmlFor="city">City</label>
+                         {inputcity}
+                    </div>
+               );
+
+               const root = ReactDOM.createRoot(document.getElementById("root"))
+               root.render(formgroup);
+          </script>
+     </body>
+</html>
+
+<!-- 
+     =Babel syntax + React Element
+     *In babel syntax, variable must inside {}
+
+     =React doesn't know "for" attribute
+          <label for="city">City</label>
+          *Error 
+               Warning: Invalid DOM property `for`. Did you mean `htmlFor`?
+               at label
+               at div
+          -Alghought it become for="" attribute in Chrome's Element, it display error in console.
+
+     =In Chrome's Element 
+          <h1>Form Intro</h1>
+          <div classname="form-group">
+               <label for="name">Name</label>
+               <input type="text" id="name" classname="form-control" placeholder="Enter your full name">
+          </div>
+
+          <div id="root">
+               <div class="form-group">
+                    <label for="city">City</label>
+                    <input type="text" name="city" id="city" class="form-control" placeholder="Enter your city">
+               </div>
+          </div>
+          
+-->

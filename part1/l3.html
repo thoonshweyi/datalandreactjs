@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+     <head>
+          <title>Multi Attribute</title>
+     </head>
+     <body>
+
+          <div id="root">
+
+
+          </div>
+
+          
+          <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+          <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+          <script type="text/javascript">
+
+               const button = React.createElement(
+                    'button',
+                    {type:"button",id:"mybtn",className:"btn"},
+                    "Click Me"
+               );
+
+               const root = ReactDOM.createRoot(document.getElementById("root"));
+               root.render(button);
+
+          </script>
+     </body>
+</html>
+
+<!-- 
+<div id="root">
+     <button type="button" id="mybtn" class="btn">Click Me</button>
+</div>
+
+*Attributes can be pre-arranged.
+*Js doesn't know class attr, it only know className
+-->
