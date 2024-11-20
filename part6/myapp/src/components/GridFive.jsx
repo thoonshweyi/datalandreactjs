@@ -25,13 +25,13 @@
 //      // }
 
 //      // method 3
-//      const message = ()=>{
-//           if(ison){
-//                return <Onmsg />;
-//           }else{
-//                return <Offmsg />;
-//           }
-//      }
+//      // const message = ()=>{
+//      //      if(ison){
+//      //           return <Onmsg />;
+//      //      }else{
+//      //           return <Offmsg />;
+//      //      }
+//      // }
 //      return(
 //           <Fragment>
 //                <h3>Lighting</h3>
@@ -41,12 +41,12 @@
 //                {/* method 2 by variable */}
 //                {/* {message} */}
 
-//                {/* method3 by function */}
-//                {message()}
+//                {/* method 3 by function */}
+//                {/* {message()} */}
 
 
 //                {/* method 4 by ternary operator */}
-//                {/* {ison ? <Onmsg /> : <Offmsg/>} */}
+//                {ison ? <Onmsg /> : <Offmsg/>}
 
 //                <button type='button' onClick={clickHandler}>Switch</button>
 
@@ -55,6 +55,8 @@
 //      )
 // }
 // export default GridFive;
+
+// (x) => !x: This is a functional update. Instead of directly using the current value (isOn), we use a function that takes the previous state value (x) and returns the new state value.
 
 
 
@@ -74,38 +76,37 @@ class GridFive extends React.Component{
 
      clickHandler = ()=>{    
           this.setState((preState)=>({
-               ison: !preState.ison // Toogle
+               ison: !preState.ison // Toogle the ison state
           }))
      }
 
      // method 1
-     IsOnOff = ({current})=>{
-          return current ? <this.Onmsg /> : <this.Offmsg/>;
-     }
-
-     // method 2
-     // let message;
-     // if(ison){
-     //      message = <Onmsg />
-     // }else{
-     //      message = <Offmsg />
+     // IsOnOff = ({current})=>{
+     //      return current ? <this.Onmsg /> : <this.Offmsg/>;
      // }
 
-     // method 3
-     // message = ()=>{
-     //      if(ison){
-     //           return <Onmsg />;
-     //      }else{
-     //           return <Offmsg />;
-     //      }
-     // }
+     
      render(){
           const {ison} = this.state;
+
+          // method 2
+          // let message;
+          // if(ison){
+          //      message = <this.Onmsg />
+          // }else{
+          //      message = <this.Offmsg />
+          // }
+
+
+          // method 3
+          // const message = ()=>{
+          //      return ison ? <this.Onmsg /> : <this.Offmsg/>;
+          // }
           return(
                <Fragment>
                     <h3>Lighting</h3>
                     {/* method 1 by component*/}
-                    <IsOnOff current={ison}/>
+                    {/* <this.IsOnOff current={ison}/> */}
      
                     {/* method 2 by variable */}
                     {/* {message} */}
@@ -115,9 +116,9 @@ class GridFive extends React.Component{
      
      
                     {/* method 4 by ternary operator */}
-                    {/* {ison ? <Onmsg /> : <Offmsg/>} */}
+                    {ison ? <this.Onmsg /> : <this.Offmsg/>}
      
-                    <button type='button' onClick={clickHandler}>Switch</button>
+                    <button type='button' onClick={this.clickHandler}>Switch</button>
      
                </Fragment>
                
@@ -126,3 +127,7 @@ class GridFive extends React.Component{
     
 }
 export default GridFive;
+
+// const {ison} = this.state;
+// **** Object destructuring for state object 
+// -reduct the recursive calling of this.state
