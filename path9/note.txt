@@ -1,0 +1,56 @@
+=>Images 
+
+     src > componnts > item.json
+
+     public >
+     = vite.svg
+     = In public >
+          images    
+
+     public > banner
+     src > assets > icons
+     mystyle.css
+
+     =In components > Banner1.jsx
+          import React from 'react';
+
+          class Banner extends React.Component{
+               render(){
+                    return(
+                         <div>
+                              {/* <img src="./../../public/banner/banner1.png" className="bannericon" alt="banner" /> */}
+                              <img src="/banner/banner1.png" className="bannericon" alt="banner" />
+
+                         </div>
+                    )
+               }
+          }
+          export default Banner;
+
+     =In mystyle.css 
+          img{
+               width: 100px;
+          }
+
+     Short route: /banner/banner1.png
+     This works because React treats the public folder as the root of your website.
+
+     If you put a file in public/banner/banner1.png, you can access it directly using /banner/banner1.png.
+     This method is simple and always works.
+     Long route: ./../../public/banner/banner1.png
+     This is a file path that looks into your computer's folder structure.
+
+     It works only during development because the image physically exists in the public folder.
+     It might break in production because the build process does not use this path.
+     Why Both Work
+     In development:
+
+     The short route works because React directly serves files from the public folder.
+     The long route works because the file is physically present and React's development server doesn’t stop you from accessing it.
+     In production:
+
+     Only the short route (/banner/banner1.png) will work because React doesn’t let you use physical file paths like ./../../public/... anymore.
+     What You Should Do
+     Always use the short route (/banner/banner1.png). It’s the correct way to include files from the public folder.
+
+     =In PhotoPost.jsx
