@@ -1,0 +1,70 @@
+
+=>Install React
+npm create vite@latest
+my-app
+React 
+Javascript 
+
+cd myapp 
+npm install 
+npm run dev
+
+=>React Router
+https://reactrouter.com/en/main
+
+cd my-app
+npm install react-router-dom@latest (note: you can install from OS terminal as well)
+
+=>React redux
+
+https://redux.js.org/
+1. install (React-Redux = npm install ract-redux)
+
+
+npm install @reduxjs/toolkit
+npm install redux
+(or)
+npm install @reduxjs/toolkit react-redux
+-----------------------------------------------------------
+Current Version "react": "^18.3.1", (9 Jan 2025)
+=>React Hook
+     React v16.8
+     (just for Fuctional Compoents)
+
+     useState()
+     useEffect()
+     useContext()
+
+  
+=>React Redux (third-party library) (current version =   "react-redux": "^9.2.0")
+     global state management
+     
+     1.Store = to store Global state
+     2.Actions = Function that describe what should happen
+     3.Reducers = create logic functions to change "State"
+     4.Dispatch = Mechanism to send actions to reducers
+-----------------------------------------------------------
+1. store: The Global State Container
+     The store is the centralized place where all the global state of your application is stored. It holds the current state and provides methods to access and update that state.
+
+     Purpose:
+
+     To store the global state of your application.
+     To allow components to access and update the state through Redux actions and reducers.
+
+     The configureStore function accepts a reducer property, where you define all the reducers for your application.
+     export default configureStore({
+          reducer: {
+               counter: counterReducer,
+          },
+     });
+     Key Points:
+
+     reducer is an object where each key represents a slice of the state, and the value is the corresponding reducer.
+     Here, the counter key is associated with the counterReducer.
+     The resulting global state will look like this:
+     {
+          counter: {
+               value: 0, // Managed by counterReducer
+          },
+     }
