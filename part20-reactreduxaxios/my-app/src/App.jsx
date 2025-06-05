@@ -37,6 +37,8 @@ function App() {
 	// Group comments by postID
 	const commentsbypost = comments.reduce((init,comment)=>{
 		init[comment.postId] = init[comment.postId] || []
+		// init[comment.postId] = [init[comment.postId]]
+
 		init[comment.postId].push(comment);
 		return init;
 	},[])

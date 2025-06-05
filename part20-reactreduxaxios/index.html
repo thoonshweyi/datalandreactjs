@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+     <head>
+          <title>Post & Comment Exercise</title>
+     </head>
+
+     <body>
+          
+          <script type="text/javascript">
+               const posts = [
+                    {
+                         "userId": 1,
+                         "id": 1001,
+                         "title": "This is new post one",
+                         "body": "quia et suscipit\nsuscipit recusandae consequuntur expedita et cum\nreprehenderit molestiae ut ut quas totam\nnostrum rerum est autem sunt rem eveniet architecto"
+                    },
+                    {
+                         "userId": 1,
+                         "id": 2002,
+                         "title": "This is new post two",
+                         "body": "est rerum tempore vitae\nsequi sint nihil reprehenderit dolor beatae ea dolores neque\nfugiat blanditiis voluptate porro vel nihil molestiae ut reiciendis\nqui aperiam non debitis possimus qui neque nisi nulla"
+                    },
+                    {
+                         "userId": 1,
+                         "id": 3003,
+                         "title": "This is new post three",
+                         "body": "et iusto sed quo iure\nvoluptatem occaecati omnis eligendi aut ad\nvoluptatem doloribus vel accusantium quis pariatur\nmolestiae porro eius odio et labore et velit aut"
+                    },
+               ]
+
+
+               const comments = [
+                    {
+                         "postId": 1001,
+                         "id": 1,
+                         "name": "Aung Aung",
+                         "email": "Eliseo@gardner.biz",
+                         "body": "laudantium enim quasi est quidem magnam voluptate ipsam eos\ntempora quo necessitatibus\ndolor quam autem quasi\nreiciendis et nam sapiente accusantium"
+                    },
+                    {
+                         "postId": 2002,
+                         "id": 2,
+                         "name": "Kyaw Kyaw",
+                         "email": "Jayne_Kuhic@sydney.com",
+                         "body": "est natus enim nihil est dolore omnis voluptatem numquam\net omnis occaecati quod ullam at\nvoluptatem error expedita pariatur\nnihil sint nostrum voluptatem reiciendis et"
+                    },
+                    {
+                         "postId": 3003,
+                         "id": 3,
+                         "name": "Su Su",
+                         "email": "Nikita@garfield.biz",
+                         "body": "quia molestiae reprehenderit quasi aspernatur\naut expedita occaecati aliquam eveniet laudantium\nomnis quibusdam delectus saepe quia accusamus maiores nam est\ncum et ducimus et vero voluptates excepturi deleniti ratione"
+                    },
+                    {
+                         "postId": 1001,
+                         "id": 4,
+                         "name": "Kyaw Kyaw",
+                         "email": "Lew@alysha.tv",
+                         "body": "non et atque\noccaecati deserunt quas accusantium unde odit nobis qui voluptatem\nquia voluptas consequuntur itaque dolor\net qui rerum deleniti ut occaecati"
+                    },
+                    {
+                         "postId": 2002,
+                         "id": 5,
+                         "name": "Aung Aung",
+                         "email": "Hayden@althea.biz",
+                         "body": "harum non quasi et ratione\ntempore iure ex voluptates in ratione\nharum architecto fugit inventore cupiditate\nvoluptates magni quo et"
+                    },
+               ];
+
+               // // format codes
+               // {
+               //      post_id1:[comment1,comment4]
+               //      post_id2:[comment2,comment5],
+               //      post_id3:[comment3]
+               // }
+
+
+               // Group Comment by post_id
+               const commentsbypost  = comments.reduce((init,comment)=>{
+                    // console.log(init);
+                    // console.log(comment)
+
+                    // init[10] = "post one";
+                    // init[11] = ['post two'];
+                    // init[11].push("post three");
+                    // init[12] = [{id:1003,title:"post four"}];
+                    // init[12].push({id:1004,title:"post five"});
+
+                    // init[comment.postId] = init[comment.postId] || [];
+                    init[comment.postId] = [init[comment.postId]];
+                    init[comment.postId].push(comment);
+
+                    return init
+               },{});
+               console.log(commentsbypost);
+          </script>
+     </body>
+</html>
+
+<!-- https://jsonplaceholder.typicode.com/posts -->
+<!-- https://jsonplaceholder.typicode.com/comments -->
+
+<!-- 24EX -->
+
+
+<!-- result of wrapping array -->
+<!-- {1001: Array(2), 2002: Array(2), 3003: Array(2)}
+1001: Array(2)
+     0: Array(2)
+          0: undefined
+          1: {postId: 1001, id: 1, name: 'Aung Aung', email: 'Eliseo@gardner.biz', body: 'laudantium enim quasi est quidem magnam voluptate …utem quasi\nreiciendis et nam sapiente accusantium'}
+          length: 2
+          [[Prototype]]: Array(0)
+     1: {postId: 1001, id: 4, name: 'Kyaw Kyaw', email: 'Lew@alysha.tv', body: 'non et atque\noccaecati deserunt quas accusantium u…r itaque dolor\net qui rerum deleniti ut occaecati'}
+     length: 2
+     [[Prototype]]: Array(0)
+2002: (2) [Array(2), {…}]
+3003: (2) [undefined, {…}]
+[[Prototype]]: Object -->
