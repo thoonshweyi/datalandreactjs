@@ -4,6 +4,7 @@ import './App.css'
 import UserList from "./features/users/UsersList";
 import AddUser from "./features/users/AddUser";
 import EditUser from "./features/users/EditUser";
+import DeleteUser from "./features/users/DeleteUser";
 
 function App() {
 
@@ -14,6 +15,7 @@ function App() {
 				<Route path="/" element={<UserList/>} />
 				<Route path="/add" element={<AddUser/>} />
 				<Route path="/edit/:id" element={<EditUser/>} />
+				<Route path="/delete/:id" element={<DeleteUser/>} />
 			</Routes>
 		</Router>
     </section>

@@ -1,9 +1,9 @@
 import {useState} from "react";
 import {useDispatch} from "react-redux";
 import {useNavigate} from "react-router"
-import {adduser} from "./../../store/usersreducer";
+import {adduser} from "./../../store/todosreducer";
 
-export default function AddUser(){
+export default function AddTodo(){
      const [name,setName] = useState('');
      const [email,setEmail] = useState('');
      const dispatch = useDispatch();
@@ -25,7 +25,6 @@ export default function AddUser(){
                <h3>Add New User</h3>
                <form onSubmit={submitHandler}>
                     <input type="text" placeholder="Enter Your Name" value={name} onChange={(e)=>setName(e.target.value)}/>
-                    <input type="text" placeholder="Enter Your Email" value={email} onChange={(e)=>setEmail(e.target.value)}/>
                     <button type="submit">Submit</button>
                </form>
           </div>

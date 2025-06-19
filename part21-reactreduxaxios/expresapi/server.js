@@ -34,13 +34,19 @@ app.post("/api/users",(req,res)=>{
 // Edit 
 app.put("/api/users/:id",(req,res)=>{
      const {id} = req.params;
-     users = users.map(user => user.id === id ? {...user,...req.body} : user)
+     users = users.map(user => user.id == id ? {...user,...req.body} : user)
      res.json({message:"Updated"});
 });
 
 // Delete User
 app.delete("/api/users/:id",(req,res)=>{
      const {id} = req.params;
+     const user = users.find(user=>user.id == id);
+     console.log(id,user);
+     if(!user){
+          return res.status(404).json({message:"User not found"});
+     }
+
      users = users.filter(user=>user.id != id);
-     res.json({message:"Deleted"});
+     res.json({id});
 });
