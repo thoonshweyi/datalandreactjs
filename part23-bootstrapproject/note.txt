@@ -1,0 +1,102 @@
+
+
+=Install UUID
+npm install uuid // under expressserver
+
+eg: w;ith destructuring
+const {v4:uuidv4} = require('uuid')
+
+eg: without destructuring
+const uuid = requuire('uuid')
+const uuid = uuid.v4
+-------------------------------------------
+=>Install Bootstrap 
+
+npm install bootstrap @popperjs/core
+     (i) Import Bootstrap CSS in your main.jsx or App.jsx
+     import "bootstrap/dist/css/bootstrap.min.css"
+     import "bootstrap/dist/js/bootstrap.bundle.min.js"
+
+=>Install Fontawesome (v ^6.7.2, v ^0.2.2)
+     https://docs.fontawesome.com/web/use-with/react
+
+     (i) install 
+          npm i --save @fortawesome/fontawesome-svg-core
+          npm i --save @fortawesome/react-fontawesome@latest
+
+          npm i --save @fortawesome/free-solid-svg-icons
+          npm i --save @fortawesome/free-regular-svg-icons
+          npm i --save @fortawesome/free-brands-svg-icons
+     (ii) Create a Fontawesome config file
+          src > libs > fontawesome.js
+
+
+          import { library } from '@fortawesome/fontawesome-svg-core'
+          import { fab } from '@fortawesome/free-solid-svg-icons'
+          import { far } from '@fortawesome/free-solid-svg-icons'
+          import { fas } from '@fortawesome/free-solid-svg-icons'
+
+         
+          library.add(fab, far, fas)
+     (iii) Import Config to src/main.jsx
+          src > main.jsx
+          
+          import './libs/fontawesome.js'
+
+     (iv) Usage in Componnts
+          import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+
+
+-------------------------------------------------------------------------------------------------
+     🔧 1. @fortawesome/react-fontawesome — React Component Library
+          ✅ Purpose:
+          This is the React wrapper that allows you to use Font Awesome icons in your JSX/React components using a <FontAwesomeIcon /> tag.
+
+          🔍 What’s inside?
+          A React component: FontAwesomeIcon
+
+          Takes JavaScript objects (icons) and renders them into SVG icons in your React DOM
+
+          Handles props like icon, size, color, spin, etc.
+
+          🔨 Example:
+          js
+          Copy
+          Edit
+          import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+          import { faCoffee } from '@fortawesome/free-solid-svg-icons';
+
+          function MyComponent() {
+          return <FontAwesomeIcon icon={faCoffee} size="lg" color="brown" spin />;
+          }
+          ➡️ This component internally uses the fontawesome-svg-core to render the SVG.
+
+          🧠 2. @fortawesome/fontawesome-svg-core — Core Engine
+          ✅ Purpose:
+          This package is the core rendering engine of Font Awesome. It does not care about React or any UI framework.
+
+          🔍 What’s inside?
+          Functions and utilities to manage icons
+
+          Converts icon definitions into SVG elements
+
+          Manages the icon library
+
+          Enables things like:
+
+          library.add() to globally register icons
+
+          Configuration of class names, CSS injection
+
+          Manual DOM rendering (non-React usage)
+
+          🔨 Example:
+          js
+          Copy
+          Edit
+          import { library } from '@fortawesome/fontawesome-svg-core';
+          import { faCoffee } from '@fortawesome/free-solid-svg-icons';
+
+          library.add(faCoffee); // Register icon globally
+          ➡️ This library does not render anything itself. It prepares the data needed to render.
+

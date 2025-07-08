@@ -15,7 +15,7 @@ export const fetchtodos = createAsyncThunk('todos/fetchtodos',async(obj,{rejectW
      }
 })
 
-
+// Add New Todos
 export const addtodo = createAsyncThunk('todos/addtodo',async(title,{rejectWithValue})=>{
      try{
           const res = await axios.post(BASEURL,{title});
@@ -27,9 +27,11 @@ export const addtodo = createAsyncThunk('todos/addtodo',async(title,{rejectWithV
      }
 })
 
+// Update todo
 export const updatetodo = createAsyncThunk('todos/updatetodo',async(obj,{rejectWithValue})=>{
      try{
           const res = await axios.put(`${BASEURL}/${obj.id}`,obj);
+          console.log(obj);
           console.log(res.data);
           return res.data;
      }catch(err){
@@ -37,11 +39,12 @@ export const updatetodo = createAsyncThunk('todos/updatetodo',async(obj,{rejectW
      }
 })
 
+// Delete todo
 export const deletetodo = createAsyncThunk('todos/deletetodo',async(id,{rejectWithValue})=>{
      try{
           const res = await axios.delete(`${BASEURL}/${id}`);
           console.log(id);
-          return res.data;
+          return id;
      }catch(err){
           return rejectWithValue('Something went wrong in delete todo',err);
      }
@@ -78,11 +81,11 @@ export const todoslice = createSlice({
                     state.todos.push(action.payload);
                })
                .addCase(updatetodo.fulfilled,(state,action)=>{
-                    state.loading = false;
-                    state.error = action.payload;
+                    const index = state.todos.findIndex(todo => todo.id == action.payload.id)
+                    if(index !== -1) state.todos[index] = action.payload;
                })
                .addCase(deletetodo.fulfilled,(state,action)=>{
-                    state.todos = state.todos.filter(todo=>todo.id != action.payload)
+                    state.todos = state.todos.filter(todo=>todo.id !== action.payload)
                })
                
      }

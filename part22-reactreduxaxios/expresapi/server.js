@@ -1,18 +1,19 @@
 const express = require('express');
-const cors = require('cors');
+const cors = require('cors'); // Cross-Origin Resource Sharing
 const {v4:uuidv4} = require('uuid');
+const bodyParser = require('body-parser'); // Express Middleware // *restrict body data type
 const app = express();
 const PORT = 5000;
 
 app.use(cors());
-app.use(express.json());
+app.use(bodyParser.json());
 
 let todos = [
-     {id:1, title:"Have to go",completed:false},
-     {id:2, title:"Have to eat",completed:false},
-     {id:3, title:"Have to shop",completed:false},
-     {id:4, title:"Have to cook",completed:false},
-     {id:5, title:"Have to visit",completed:false},
+     // {id:1, title:"Have to go",completed:false},
+     // {id:2, title:"Have to eat",completed:false},
+     // {id:3, title:"Have to shop",completed:false},
+     // {id:4, title:"Have to cook",completed:true},
+     // {id:5, title:"Have to visit",completed:true},
 ]
 
 app.listen(PORT,()=>{
@@ -42,13 +43,55 @@ app.put("/api/todos/:id",(req,res)=>{
 
 // Delete todo
 app.delete("/api/todos/:id",(req,res)=>{
-     const {id} = req.params;
-     const todo = todos.find(todo=>todo.id == id);
-     console.log(id,todo);
-     if(!todo){
-          return res.status(404).json({message:"todo not found"});
-     }
+     // const {id} = req.params;
+     // const todo = todos.find(todo=>todo.id == id);
+     // console.log(id,todo);
+     // if(!todo){
+     //      return res.status(404).json({message:"todo not found"});
+     // }
 
-     todos = todos.filter(todo=>todo.id != id);
-     res.status(204).send();
+     // todos = todos.filter(todo=>todo.id != id);
+     // res.status(204).send();
+
+
+
+
+     // const {id} = req.params;
+     // const todoindex = todos.findIndex(todo=>todo.id == id);
+     // if(todoindex == -1){
+     //      return res.status(404).json({message:"todo not found"});
+     // }
+
+     // todos = todos.filter(todo=>todo.id != id);
+     // res.status(204).send();
+
+
+
+
+     // const {id} = req.params;
+     // const todoindex = todos.findIndex(todo=>todo.id == id);
+     // if(todoindex == -1){
+     //      return res.status(404).json({message:"todo not found"});
+     // }
+
+     // todos.splice(todoindex,1);
+     // // res.status(204).send();
+     // res.status(204).json({id});
+
+
+
+
+
+     try{
+          const {id} = req.params;
+          const todoindex = todos.findIndex(todo=>todo.id == id);
+          if(todoindex == -1){
+               return res.status(404).json({message:"todo not found"});
+          }
+
+          todos.splice(todoindex,1);
+          res.status(204).json({id});
+     }catch(err){
+          console.log("Error deleting ",err)
+     }
 });

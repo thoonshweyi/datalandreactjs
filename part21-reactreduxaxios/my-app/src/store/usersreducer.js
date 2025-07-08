@@ -76,8 +76,10 @@ export const userSlice = createSlice({
                     state.users.push(action.payload);
                })
                .addCase(edituser.fulfilled,(state,action)=>{
-                    state.loading = false;
-                    state.error = action.payload;
+                    // state.loading = false;
+                    // state.error = action.payload;
+                    const index = state.users.findIndex(user => user.id === action.payload.id)
+                    if(index !== -1) state.users[index] = action.payload;
                })
                .addCase(deleteuser.fulfilled,(state,action)=>{
                     state.users = state.users.filter(user=>user.id != action.payload)
