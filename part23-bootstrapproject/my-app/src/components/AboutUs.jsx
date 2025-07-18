@@ -4,25 +4,25 @@ const AboutUs = ()=>{
      return (
           <>
                {/* Start About Us Section */}
-               <section id="about" class="py-5 aboutuss">
-                    <div class="container">
-                         <div class="row">
-                              <div class="col-sm-6">
+               <section id="about" className="py-5 aboutuss">
+                    <div className="container">
+                         <div className="row">
+                              <div className="col-sm-6">
                               <img src={staffGirl} alt="staffgirl1"/>
                               </div>
 
-                              <div class="col-sm-6 text-center text-light">
-                              <div class="row">
-                                   <div class="col-md-12">
-                                        <h2 class="text-uppercase">Who are we !!!</h2>
-                                        <div class="lines"></div>
-                                        <div class="lines"></div>
-                                        <div class="lines"></div>
+                              <div className="col-sm-6 text-center text-light">
+                              <div className="row">
+                                   <div className="col-md-12">
+                                        <h2 className="text-uppercase">Who are we !!!</h2>
+                                        <div className="lines"></div>
+                                        <div className="lines"></div>
+                                        <div className="lines"></div>
                                    </div>
-                                   <div class="col-md-12">
-                                        <h5 class="fst-italic">Lorem Ipsum is simply dummy text of the printing and typesetting industry.</h5>
+                                   <div className="col-md-12">
+                                        <h5 className="fst-italic">Lorem Ipsum is simply dummy text of the printing and typesetting industry.</h5>
                                         <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.</p>
-                                        <a href="#" class="btn btn-danger rounded-0">Read More</a>
+                                        <a href="#" className="btn btn-danger rounded-0">Read More</a>
                                    </div>
                               </div>
 

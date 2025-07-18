@@ -46,7 +46,55 @@ npm install bootstrap @popperjs/core
      (iv) Usage in Componnts
           import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
+=>Install jQuery and Inject (v, v)
+     https://www.npmjs.com/package/@rollup/plugin-inject
+     (i) instal jQuery 
+          npm install jquery 
 
+     (ii) install Inject
+          npm install @rollup/plugin-inject --save-dev
+
+     (iii) Vite config setting for Inject 
+          // vite.config.js
+
+
+          import { defineConfig } from 'vite'
+          import react from '@vitejs/plugin-react'
+
+          // https://vite.dev/config/
+          export default defineConfig({
+          plugins: [
+          react(),
+          inject({
+               $: 'jquery',
+               jQuery: 'jquery'
+          })
+          ],
+          optimizeDeps: {
+          include : ['jquery']
+          }
+          })
+
+     (iv) Import jquery to your component
+          import $ from jquery;
+          useEffect(()=>{
+               $('.titles').css('color',"red")
+          })
+
+=> Install lightbox 2 (v)
+
+     (i) install 
+          npm install lightbox2 --save
+
+     (ii)  Import 
+          // src/main.jsx     or   your Components
+
+          import 'lightbox2/dist/css/lightbox.min.css'
+          import 'lightbox2/dist/js/lightbox.min.js'
+
+
+     // Advertising Section  
+     10HW 
 -------------------------------------------------------------------------------------------------
      🔧 1. @fortawesome/react-fontawesome — React Component Library
           ✅ Purpose:

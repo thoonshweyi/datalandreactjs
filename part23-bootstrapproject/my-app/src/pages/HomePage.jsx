@@ -10,6 +10,8 @@ import Header from "../components/Header.jsx";
 import Navbar from "../components/Navbar.jsx";
 import Properties from "../components/Properties.jsx";
 import Services from "../components/Services.jsx";
+import Clients from "../components/Clients.jsx";
+
 
 const HomePage = ()=>{
      return (
@@ -23,6 +25,7 @@ const HomePage = ()=>{
                <Furniture/>
                <Properties/>
                <Services/>
+               <Clients />
 
                <BackToTop/>
           </>

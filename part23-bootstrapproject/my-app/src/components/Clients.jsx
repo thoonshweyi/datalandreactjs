@@ -7,7 +7,7 @@ import image4 from "./../assets/img/gallery/image4.jpg"
 import image5 from "./../assets/img/gallery/image5.jpg"
 import image6 from "./../assets/img/gallery/image6.jpg"
 
-const Services = ()=>{
+const Clients = ()=>{
      
      const [images, setImages] =useState({});
 
@@ -116,7 +116,7 @@ const Services = ()=>{
          </>
      )
 };
-export default Services;
+export default Clients;
 
 
 
