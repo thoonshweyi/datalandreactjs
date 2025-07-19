@@ -31,7 +31,7 @@ const Services = ()=>{
 
 
                     setImages({
-                         image1: imageModules[0].default,
+                         image1: imageModules[0].default, // image1: "/src/assets/img/gallery/image1.jpg"
                          image2: imageModules[1].default,
                          image3: imageModules[2].default,
                          image4: imageModules[3].default,

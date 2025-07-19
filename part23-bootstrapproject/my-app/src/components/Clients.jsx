@@ -9,110 +9,88 @@ import image6 from "./../assets/img/gallery/image6.jpg"
 
 const Clients = ()=>{
      
-     const [images, setImages] =useState({});
+     const [clientImages, setClientImages] =useState({});
 
      
      useEffect(()=>{
           
-          const importimages = async ()=>{
+          const importclientimages = async ()=>{
                try{ 
 
                     const imageModules = await Promise.all([
-                         import("../assets/img/gallery/image1.jpg"),
-                         import("../assets/img/gallery/image2.jpg"),
-                         import("../assets/img/gallery/image3.jpg"),
-                         import("../assets/img/gallery/image4.jpg"),
-                         import("../assets/img/gallery/image5.jpg"),
-                         import("../assets/img/gallery/image6.jpg")
+                         import("../assets/img/clients/client1.png"),
+                         import("../assets/img/clients/client2.png"),
+                         import("../assets/img/clients/client3.png"),
+                         import("../assets/img/clients/client4.png"),
+                         import("../assets/img/clients/client5.png"),
                     ]);
 
                     // console.log(imageModules) // (6) [Module, Module, Module, Module, Module, Module]
                     // console.log(imageModules[0].default) // /src/assets/img/gallery/image1.jpg
 
 
-                    setImages({
-                         image1: imageModules[0].default,
-                         image2: imageModules[1].default,
-                         image3: imageModules[2].default,
-                         image4: imageModules[3].default,
-                         image5: imageModules[4].default,
-                         image6: imageModules[5].default,
+                    setClientImages({
+                         client1: imageModules[0].default, // client1: "/src/assets/img/gallery/image1.jpg"
+                         client2: imageModules[1].default,
+                         client3: imageModules[2].default,
+                         client4: imageModules[3].default,
+                         client5: imageModules[4].default,
                     });
                     // console.log(images)
                }   catch(err){
-                    console.error("Error loading image: ",err);
+                    console.error("Error loading client image: ",err);
                }
           }
-          importimages();
+          importclientimages();
 
           // console.log(import("../assets/img/gallery/image1.jpg")) // Promise {<pending>}
      },[])
 
-     const datas = [
-          {
-               imgname: "image1",
-               rooname: "Living Room"
-          },
-          {
-               imgname: "image2",
-               rooname: "Mini Bar"
-          },
-          {
-               imgname: "image3",
-               rooname: "Dining Room"
-          },
-          {
-               imgname: "image4",
-               rooname: "Meeting Room"
-          },
-           {
-               imgname: "image5",
-               rooname: "Bed Room"
-          },
-          {
-               imgname: "image6",
-               rooname: "Pantry Room"
-          },
-     ];
+     
 
-     console.log(Object.keys(images)); // (6) ['image1', 'image2', 'image3', 'image4', 'image5', 'image6']
-     if(Object.keys(images).length === 0){
-          return <div className="text-center py-5">Loading images....</div>
+
+     // console.log(Object.keys(clientImages)); // (5) ['client1', 'client2, 'client3', 'client4', 'client5']
+     // console.log(Object.entries(clientImages)); // (5) [Array(2), Array(2), Array(2), Array(2), Array(2)]
+     if(Object.keys(clientImages).length === 0){
+          return <div className="text-center py-5">Loading client images....</div>
      }
 
      return (
          <>
-          {/*-- Start Services Section*/}
-               <section id="services" className="py-4 services">
+               {/* Start Client Section */}
+               <section className="p-3">
                     <div className="container-fluid">
-
-                    {/*-- start title*/}
+                         {/* start title */}
                          <div className="row text-center">
-                         <div className="col-12">
-                              <h3 className="titles text-light">Our Services</h3>
-                              <p className="lead text-white">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.</p>
+                              <div className="col-12">
+                              <h3 className="titles">Satisfied Clients</h3>
+                              <p className="small">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry.</p>
+                              </div>
                          </div>
-                         </div>
-                    {/*-- end title*/}
-
+                         {/* end title */}
                          <div className="row">
-                              {
-                                   datas.map((data,idx)=>(
-                                        <div key={idx} className="col-lg-4 col-md-6 mb-3">
-                                             <div className="card border-0 servicecards">
-                                                  <img src={images[data.imgname]} alt="image1"/>
-                                                  <h5 className="text-white text-uppercase fw-bold py-2 servicetexts">{data.rooname}</h5>
-                                             </div>
-                                        </div>
-                                   ))
-                              }
-                             
-                         
-                         </div>
+                              <div className="col-md-12">
+                              <ul className="clientlists">
+                                   
+                                   {/* {
+                                        Object.keys(clientImages).map((key,idx)=>(
+                                             <li key={idx}><img src={ clientImages[key] } alt={key} /></li>
+                                        ))
+                                   } */}
 
+                                   {
+                                        Object.entries(clientImages).map(([key,src])=>(
+                                             <li key={key}><img src={ src } alt={key} /></li>
+                                        ))
+                                   }
+
+                                  
+                              </ul>
+                              </div>
+                         </div>
                     </div>
                </section>
-          {/*-- End Services Section*/}
+               {/* End Client Section */}
          </>
      )
 };
@@ -122,57 +100,12 @@ export default Clients;
 
 // -------------------------------------------
 // *result 
-// console.log(import("../assets/img/gallery/image1.jpg"))
-// Promise {<pending>}
-// [[Prototype]]: Promise
-// catch: ƒ catch()
-// constructor: ƒ Promise()
-// finally: ƒ finally()
-// then: ƒ then()
-// Symbol(Symbol.toStringTag): "Promise"
-// [[Prototype]]: Object
-// [[PromiseState]]: "fulfilled"
-// [[PromiseResult]]: Module
-
-
-// *result 
-// imageModules
-
-// (6) [Module, Module, Module, Module, Module, Module]
-// 0: Module {Symbol(Symbol.toStringTag): 'Module'}
-// 1: Module {Symbol(Symbol.toStringTag): 'Module'}
-// 2: Module {Symbol(Symbol.toStringTag): 'Module'}
-// 3: Module {Symbol(Symbol.toStringTag): 'Module'}
-// 4: Module {Symbol(Symbol.toStringTag): 'Module'}
-// 5: Module
-// default: "/src/assets/img/gallery/image6.jpg"
-// Symbol(Symbol.toStringTag): "Module"
-// get default: ƒ ()
-// set default: ƒ ()
-// length: 6
+// console.log(Object.entries(clientImages));
+// (5) [Array(2), Array(2), Array(2), Array(2), Array(2)]
+// 0: (2) ['client1', '/src/assets/img/clients/client1.png']
+// 1: (2) ['client2', '/src/assets/img/clients/client2.png']
+// 2: (2) ['client3', '/src/assets/img/clients/client3.png']
+// 3: (2) ['client4', '/src/assets/img/clients/client4.png']
+// 4: (2) ['client5', '/src/assets/img/clients/client5.png']
+// length: 5
 // [[Prototype]]: Array(0)
-
-
-// Testing Image not avialable 
-// -Empty imageModules 
-
-// -const datas = [
-//      {
-//           imgname: "image1",
-//           rooname: "Living Room"
-//      },
-     
-//      {
-//           imgname: "image60",
-//           rooname: "Pantry Room"
-//      },
-// ];
-// Image link broken
-
-// -setImages({
-//      image1: imageModules[0].default,
-//        ....
-//      image6: imageModules[50].default,
-// });
-// Services.jsx?t=1752854876324:50 Error loading image:  TypeError: Cannot read properties of undefined (reading 'default')
-//     at importimages (Services.jsx?t=1752854876324:47:36)
