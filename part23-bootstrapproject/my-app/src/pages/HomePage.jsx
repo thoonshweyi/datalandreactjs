@@ -1,16 +1,20 @@
 import React from "react";
 
 import AboutUs from "../components/AboutUs"
+import Properties from "../components/Properties.jsx";
+import Adv from "../components/Adv.jsx";
+
 import BackToTop from "../components/BackToTop"
 import Contact from "../components/Contact"
-import Customers from "../components/Customers.jsx";
-import Footer from "../components/Footer.jsx";
 import Furniture from "../components/Furniture.jsx";
 import Header from "../components/Header.jsx";
 import Navbar from "../components/Navbar.jsx";
-import Properties from "../components/Properties.jsx";
+
 import Services from "../components/Services.jsx";
 import Clients from "../components/Clients.jsx";
+import Customers from "../components/Customers.jsx";
+import Quote from "../components/Quote.jsx";
+import Footer from "../components/Footer.jsx";
 
 
 const HomePage = ()=>{
@@ -19,13 +23,16 @@ const HomePage = ()=>{
                <Header/>
                <Navbar/>
                <AboutUs/>
-
-               <Contact/>
-               <Customers/>
-               <Furniture/>
                <Properties/>
+               <Adv/>
+               <Contact/>
+               
+             
                <Services/>
                <Clients />
+               <Customers/>
+               <Quote/>
+               <Furniture/>
 
                <BackToTop/>
           </>
