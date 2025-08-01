@@ -1,4 +1,4 @@
-import React,{useState,useEffect} from "react";
+import React,{useEffect,useState} from "react";
 import building4 from "../assets/img/etc/building4.png"
 const Adv = ()=>{
      const [advAnimation,setAdvAnimation] = useState({
@@ -9,18 +9,36 @@ const Adv = ()=>{
 
      useEffect(()=>{
           const scrollHandler = ()=>{
-               const getscrolltop = document.documentElement.scrollTop;
-               console.log(getscrolltop);
+               const getscrolltop = window.scrollY || document.documentElement.scrollTop;
+               // console.log(getscrolltop);
 
-
+               // method 1
                setAdvAnimation({
                     image: getscrolltop >= 900,
                     text: getscrolltop >= 900
                })
+
+               // method 2
+               // if(getscrolltop >= 900){
+               //      setAdvAnimation({
+               //           image: true,
+               //           text: true
+               //      })
+               // }else{
+               //      setAdvAnimation({
+               //           image: false,
+               //           text: false
+               //      })
+               // }
+
+          
           }
 
           window.addEventListener("scroll",scrollHandler);
-     },[]);
+
+          // clean up the event listener when component unmounts
+          return ()=> window.removeEventListener('scroll',scrollHandler)
+     },[advAnimation]);
 
      return (
           <>

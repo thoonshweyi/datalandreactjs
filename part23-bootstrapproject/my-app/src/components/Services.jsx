@@ -75,7 +75,7 @@ const Services = ()=>{
           },
      ];
 
-     console.log(Object.keys(images)); // (6) ['image1', 'image2', 'image3', 'image4', 'image5', 'image6']
+     // console.log(Object.keys(images)); // (6) ['image1', 'image2', 'image3', 'image4', 'image5', 'image6']
      if(Object.keys(images).length === 0){
           return <div className="text-center py-5">Loading images....</div>
      }

@@ -1,9 +1,24 @@
-import React from "react";
+import React, { useEffect,useState } from "react";
 import {Link} from "react-router";
 import favicon from "../assets/img/fav/favicon.png"
 const Navbar = ()=>{
+     const [scrolled,setScrolled] = useState(false);
+     useEffect(()=>{
+          const scrollHandler = ()=>{
+               const getscrolltop = window.scrollY || document.documentElement.scrollTop;
+
+               // console.log(getscrolltop); 
+               setScrolled(getscrolltop >= 200);
+          }
+          window.addEventListener("scroll",scrollHandler);
+
+          // clean up the event listener when component unmounts
+          return ()=> window.removeEventListener('scroll',scrollHandler)
+     },[scrolled])
+
+
      return (
-          <nav className="navbar navbar-expand-lg fixed-top">
+          <nav className={`navbar navbar-expand-lg fixed-top ${scrolled ? 'navmenus' : ''}`}>
                <Link to="/" className="navbar-brand text-light mx-3">
                     <img src={favicon} width="70px" alt="favicon"  
                          // onError={(e)=>{

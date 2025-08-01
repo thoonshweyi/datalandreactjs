@@ -7,7 +7,7 @@ import user3 from "../assets/img/users/user3.jpg"
 
 
 const Customer = ()=>{
-     console.log(Array(5));
+     // console.log(Array(5));
 
      return (
           <>

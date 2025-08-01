@@ -25,15 +25,12 @@ const HomePage = ()=>{
                <AboutUs/>
                <Properties/>
                <Adv/>
-               <Contact/>
-               
-             
                <Services/>
                <Clients />
                <Customers/>
                <Quote/>
                <Furniture/>
-
+               <Contact/>
                <BackToTop/>
           </>
      )
