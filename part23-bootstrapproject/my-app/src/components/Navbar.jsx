@@ -38,7 +38,7 @@ const Navbar = ()=>{
                <div id="nav" className="navbar-collapse collapse justify-content-end text-uppercase fw-bold">
                     <ul className="navbar-nav">
                          <li className="nav-item"><Link to="/" className="nav-link mx-2 menuitems">Home</Link></li>
-                         <li className="nav-item"><Link to="/about" className="nav-link mx-2 menuitems">About Us</Link></li>
+                         <li className="nav-item"><Link to="/aboutus" className="nav-link mx-2 menuitems">About Us</Link></li>
                          <li className="nav-item"><Link to="/properties" className="nav-link mx-2 menuitems">Properties</Link></li>
                          <li className="nav-item"><Link to="/services" className="nav-link mx-2 menuitems">Services</Link></li>
                          <li className="nav-item"><Link to="/customers" className="nav-link mx-2 menuitems">Customer</Link></li>

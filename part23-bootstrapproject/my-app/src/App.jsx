@@ -20,7 +20,7 @@ function App() {
 		<Navbar />
 			<Routes>
 				<Route path="/" element={<HomePage />} />
-				<Route path="/abouts" element={<AboutPage />}/>
+				<Route path="/aboutus" element={<AboutPage />}/>
 				<Route path="/properties" element={<PropertyPage />} />
 				<Route path="/services" element={<ServicePage />} />
 				<Route path="/customers" element={<CustomerPage />} />

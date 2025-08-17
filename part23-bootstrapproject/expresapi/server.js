@@ -7,82 +7,74 @@ const PORT = 5000;
 app.use(cors());
 app.use(express.json());
 
-let todos = [
-     {id:1, title:"Have to go",completed:false},
-     {id:2, title:"Have to eat",completed:false},
-     {id:3, title:"Have to shop",completed:false},
-     {id:4, title:"Have to cook",completed:true},
-     {id:5, title:"Have to visit",completed:true},
-]
+let aboutUsDatas = {
+     whyChooseUs: [
+          {icon: "fa-solid fa-bolt",title: "Fast Delivery",desc: "Lorem Ipsum is simply dummy text of the printing and typesetting industry."},
+          {icon: "fa-regular fa-lightbulb",title: "Creative Solution",desc: "Lorem Ipsum is simply dummy text of the printing and typesetting industry."},
+          {icon: "fa-regular fa-handshake",title: "Client Collaboration",desc: "Lorem Ipsum is simply dummy text of the printing and typesetting industry."},
+     ],
+     coreValues: [
+          {title: "Integrity",desc: "Lorem Ipsum is simply dummy text of the printing and typesetting industry."},
+          {title: "Inovation",desc: "Lorem Ipsum is simply dummy text of the printing and typesetting industry."},
+          {title: "Customer Focus",desc: "Lorem Ipsum is simply dummy text of the printing and typesetting industry."},
+          {title: "Excellence",desc: "Lorem Ipsum is simply dummy text of the printing and typesetting industry."},
+     ]
+};
+
+const ClientsSayDatas = [
+     {
+          name: "Myint Mho",
+          role: "CEO, TechSolutions",
+          feedback: "The support team was incredibly responseive....",
+          raging: 5,
+          gender: "female",
+          avaterId: 30
+     },
+     {
+          name: "Maung Oo",
+          role: "Director, Blobal Innovations",
+          feedback: "24/7 support the actually responds....",
+          raging: 4.5,
+          gender: "male",
+          avaterId: 45
+     },
+     {
+          name: "Cho Lae",
+          role: "MD, Digital Ventures",
+          feedback: "We've worked with many support teams....",
+          raging: 5,
+          gender: "female",
+          avaterId: 65
+     },
+];
 
 app.listen(PORT,()=>{
      console.log(`Express Server is runing on http://localhost:${PORT}`)
 });
 
 // All todos
-app.get('/api/todos',(req,res)=>{
-     res.json(todos);
+
+app.get('/api/aboutus',(req,res)=>{
+     res.json(aboutUsDatas);
 });
 
-// Add New todo
-app.post("/api/todos",(req,res)=>{
-     const {title} = req.body;
-     const newtodo ={id: uuidv4(),title,completed:false};
-     todos.push(newtodo);
-     res.status(200).json(newtodo);
-});
+// Contact Page
+// http:// localhost:5000/api/contacts/clientsays
 
-// Update Todo 
-app.put("/api/todos/:id",(req,res)=>{
-     const {id} = req.params;
-     const {title,completed} = req.body
-     todos = todos.map(todo => todo.id == id ? {...todo,title,completed} : todo)
-     res.json({id,title,completed});
-});
+application.get("api/contacts/clientsays",(req,res)=>{
+     res.json(ClientsSayDatas);
+})
 
-// Delete todo
-app.delete("/api/todos/:id",(req,res)=>{
-     // const {id} = req.params;
-     // const todo = todos.find(todo=>todo.id == id);
-     // console.log(id,todo);
-     // if(!todo){
-     //      return res.status(404).json({message:"todo not found"});
-     // }
+// http:// localhost:5000/api/contacts/formsubmit
+application.get("api/contacts/formsubmit",(req,res)=>{
+     const {name,email,message} = req.body;
 
-     // todos = todos.filter(todo=>todo.id != id);
-     // res.status(204).send();
-
-
-
-     // const {id} = req.params;
-     // const todoindex = todos.findIndex(todo=>todo.id == id);
-     // if(todoindex == -1){
-     //      return res.status(404).json({message:"todo not found"});
-     // }
-
-     // todos = todos.filter(todo=>todo.id != id);
-     // res.status(204).send();
-
-
-     // const {id} = req.params;
-     // const todoindex = todos.findIndex(todo=>todo.id == id);
-     // if(todoindex == -1){
-     //      return res.status(404).json({message:"todo not found"});
-     // }
-
-     // todos.splice(todoindex,1);
-     // res.status(204).send();
-
-     try{
-          const {id} = req.params;
-          const todoindex = todos.findIndex(todo=>todo.id == id);
-          if(todoindex == -1){
-               return res.status(404).json({message:"todo not found"});
-          }
-
-          todos.splice(todoindex,1);
-          res.status(204).json({id});
-     }catch(err){
-          console.log("Error deleting ",err)
+     if(!name || !email || !message){
+          return res.status(400).json({error:"All fields are required."})
      }
-});
+     console.log("Form Datas: ",{name,email,message}); // servers.js terminal
+
+     return res.status(200).json({success:true,message:"Message received."});
+})
+
+// 14CS
