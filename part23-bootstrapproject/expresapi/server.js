@@ -26,7 +26,7 @@ const ClientsSayDatas = [
           name: "Myint Mho",
           role: "CEO, TechSolutions",
           feedback: "The support team was incredibly responseive....",
-          raging: 5,
+          raging: 3.2,
           gender: "female",
           avaterId: 30
      },
@@ -59,14 +59,14 @@ app.get('/api/aboutus',(req,res)=>{
 });
 
 // Contact Page
-// http:// localhost:5000/api/contacts/clientsays
+// http://localhost:5000/api/contacts/clientsays
 
-application.get("api/contacts/clientsays",(req,res)=>{
+app.get("/api/contacts/clientsays",(req,res)=>{
      res.json(ClientsSayDatas);
 })
 
 // http:// localhost:5000/api/contacts/formsubmit
-application.get("api/contacts/formsubmit",(req,res)=>{
+app.get("/api/contacts/formsubmit",(req,res)=>{
      const {name,email,message} = req.body;
 
      if(!name || !email || !message){

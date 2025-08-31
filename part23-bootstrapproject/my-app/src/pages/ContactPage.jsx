@@ -1,8 +1,19 @@
 import React, {useState,useEffect} from "react";
+import {useDispatch,useSelector} from "react-redux"
+import {fetchClientsays} from "./../store/clientsaySlice";
+import {submitContactForm,resetFormState} from "./../store/contactFormSlice";
+
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
 import banner4 from "../assets/img/banner/banner4.jpg"
 
 const ContactPage = ()=>{
+     const {loading:clientsayLoading, error:clientsayError, datas} = useSelector(state=>state.clientsays);
+     const {loading:formLoading, error:formError, successMessage} = useSelector(state=>state.clientsays);
+     const dispatch = useDispatch();
+     useEffect(()=>{
+          dispatch(fetchClientsays());
+     })
+
      return (
           <main className="bg-dark text-light">
                {/* Banner */}
@@ -23,9 +34,11 @@ const ContactPage = ()=>{
 
                     <div className="container">
                          <div className="text-center mb-5">
-                              <h3 className="mb-4">What Our Clients Say</h3>
+                              <h3 className="fw-bold mb-4">What Our Clients Say</h3>
                               <p className="lead">Trusted by thousands of customers worldwide.</p>
                          </div>
+
+                         {clientsayLoading && <p className="text-light text-center">Loading....</p>}
                          
                          <div className="row g-4">
                               <div className="col-lg-4">
