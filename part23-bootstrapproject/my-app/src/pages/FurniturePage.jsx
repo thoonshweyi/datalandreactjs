@@ -1,11 +1,14 @@
 import React,{useState,useEffect} from "react";
 import {useDispatch,useSelector} from "react-redux"
+import {Link} from "react-router";
+
 import {fetchFurnitures} from "./../store/furnitureSlice";
 
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
 import {faSpinner,faExclamation,faTag} from "@fortawesome/free-solid-svg-icons"
 
 import banner4 from "../assets/img/banner/banner4.jpg"
+
 const FurniturePage = ()=>{
      const {loading,error,datas} = useSelector((state)=>state.furnitures)
      const dispatch = useDispatch();
@@ -69,7 +72,7 @@ const FurniturePage = ()=>{
                                                             <FontAwesomeIcon icon={faTag} className="me-1" />
                                                             {data.price}
                                                        </span>
-                                                       <button className="btn btn-sm btn-dark">View</button>
+                                                       <Link to={`/furnitures/${data.id}`}  className="btn btn-sm btn-dark">View</Link>
                                                   </div>
                                              </div>
                                         </div>
