@@ -8,12 +8,35 @@ import banner4 from "../assets/img/banner/banner4.jpg"
 
 const CartPage = ()=>{
      const navigate = useNavigate();
+     const [carts,setCarts] = useState([]);
      const [loading,setLoading] = useState(true);
 
      useEffect(()=>{
-          
+          const getcarts = JSON.parse(localStorage.getItem('cart')) || []; // abccart // companynamecart
+          setCarts(getcarts);
+
      },[]);
-   
+
+     const removeHandler = (productid)=>{
+
+     }
+
+     const clearHandler = (id)=>{
+          setCarts([]);
+          localStorage.removeItem("cart");
+     }
+
+     // if(carts.length == 0){
+     //      return (
+     //           <div className="container text-center py-3">
+     //                <h3>Your cart is empty</h3>
+     //                <button type="button" className="btn btn-outline-secondary mb-4" onClick={()=>navigate(-1)}><FontAwesomeIcon icon={faArrowLeft} />Back To Shop</button>
+     //           </div>
+     //      )
+     // }
+
+     const total = carts.reduce((prev,next)=>prev + next.price * (next.qty || 1),0);
+     
      return (
           <main className="bg-light">
                {/* Banner */}
@@ -30,43 +53,61 @@ const CartPage = ()=>{
                     </div>
                </section>
 
-               <section className="container py-5">
+               
+   
+               {/* { carts ?? */}
+                    (<section className="container py-5">
 
-                    <button type="button" className="btn btn-outline-secondary mb-4" onClick={()=>navigate(-1)}><FontAwesomeIcon icon={faArrowLeft} />Back</button>
+                         <button type="button" className="btn btn-outline-secondary mb-4" onClick={()=>navigate(-1)}><FontAwesomeIcon icon={faArrowLeft} />Back</button>
 
-                    {/* loading */}
-                    {loading && (
-                         <div className="text-center">
-                              <FontAwesomeIcon icon={faSpinner} spin className="text-warning"/>
-                              <p className="mt-2">Loading furniture....</p>
+                         {/* product cards */}
+                         <div className="row g-4">
+                              {
+                                   carts.map(item=>(
+                                        <div key={item.id} className="col-lg-4 col-md-6 text-center">
+                                             <div className="card h-100 shadow-sm">
+                                                  <img src={ item.thumbnail || item.images?.[0] } className="card-img-top p-3" style={{height:"200px",objectFit:"contain"}} alt={item.title} />
+
+                                                  <div className="card-body d-flex flex-column">
+                                                       <span className="card-title">{item.title}</span>
+                                                       <span className="card-itle">{item.description?.substring(0.70)}....</span>
+                                                       
+                                                       <div className="d-flex justify-content-between mt-auto">
+                                                            <span className="fw-bold text-success">
+                                                                 <FontAwesomeIcon icon={faTag} className="me-1"/>{item.price}
+                                                            </span>
+                                                            <button className="btn btn-sm btn-outline-danger" onClick={()=>removeHandler(item.id)}><FontAwesomeIcon icon={faTrash} /></button>
+                                                       </div>
+                                                  </div>
+                                             </div>
+                                        </div>
+                                   ))
+                              }
+
+                              
+                         
+
                          </div>
-                    )}
 
-                    
-                    {/* product cards */}
-                    <div className="row g-4">
-                         <div className="col-lg-4 col-md-6 text-center">
-                              <div className="card h-100 shadow-sm">
-                                   <img src="a" className="" style={{height:"200px",objectFit:"contain"}} alt="" />
-                              </div>
-
-                              <div>
-                                   <span className="fw-bold text-success">1000</span>
-                                   <button className="btn btn-sm btn-outline-danger"><FontAwesomeIcon icon={faTrash} /></button>
-                                   
-                              </div>
+                         {/* Card Total */}
+                         <div className="bg-light rounded shadow-sm p-4 mt-5">
+                              <h4>Total: <span className="text-success">${total.toFixed(2)}</span></h4>
+                              <button type="button" className="btn btn-dark mt-3">Proceed to Checkout</button>
                          </div>
-                       
 
-                    </div>
+                    </section>)
+               {/* } */}
 
-                    {/* Card Total */}
-                    <div className="bg-light rounded shadow-sm p-4 mt-5">
-                         <h4>Total: <span className="text-success">1000</span></h4>
-                         <button type="button" className="btn btn-dark mt-3">Proceed to Checkout</button>
-                    </div>
-
-               </section>
+               {
+                    carts.length == 0 ?
+                    (
+                         <div className="container text-center py-3">
+                              <h3>Your cart is empty</h3>
+                              <button type="button" className="btn btn-outline-secondary mb-4" onClick={()=>navigate(-1)}><FontAwesomeIcon icon={faArrowLeft} />Back To Shop</button>
+                         </div>
+                    ) : ''
+               
+               }
           </main>
      )
 };
