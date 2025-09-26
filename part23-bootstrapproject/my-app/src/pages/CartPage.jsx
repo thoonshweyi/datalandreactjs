@@ -1,7 +1,7 @@
 import React,{useState,useEffect} from "react";
 import {useNavigate} from "react-router";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
-import {faArrowLeft,faBoxOpen,faStar,faTrash,faSpinner,faExclamation,faTag} from "@fortawesome/free-solid-svg-icons"
+import {faArrowLeft,faBoxOpen,faStar,faTrash,faSpinner,faExclamation,faTag,faShoppingCart} from "@fortawesome/free-solid-svg-icons"
  
 import banner4 from "../assets/img/banner/banner4.jpg"
 
@@ -18,7 +18,9 @@ const CartPage = ()=>{
      },[]);
 
      const removeHandler = (productid)=>{
-
+          const updatecart = carts.filter(cart => cart.id != productid);
+          setCarts(updatecart);
+          localStorage.setItem("cart", JSON.stringify(updatecart));
      }
 
      const clearHandler = (id)=>{
@@ -55,11 +57,15 @@ const CartPage = ()=>{
 
                
    
-               {/* { carts ?? */}
-                    (<section className="container py-5">
+               { (carts && carts.length > 0) &&
+                    <section className="container py-5">
 
                          <button type="button" className="btn btn-outline-secondary mb-4" onClick={()=>navigate(-1)}><FontAwesomeIcon icon={faArrowLeft} />Back</button>
 
+                         <div className="d-flex justify-content-between aligh-items-center mb-4">
+                              <h4><FontAwesomeIcon icon={faShoppingCart} className="me-2"/>Your Cart</h4>
+                              <button type="button" className="btn btn-danger btn-sm" onClick={clearHandler}>Clear Cart</button>
+                         </div>
                          {/* product cards */}
                          <div className="row g-4">
                               {
@@ -92,18 +98,18 @@ const CartPage = ()=>{
                          {/* Card Total */}
                          <div className="bg-light rounded shadow-sm p-4 mt-5">
                               <h4>Total: <span className="text-success">${total.toFixed(2)}</span></h4>
-                              <button type="button" className="btn btn-dark mt-3">Proceed to Checkout</button>
+                              <button type="button" className="btn btn-dark mt-3" onClick={()=>navigate("/checkout")}>Proceed to Checkout</button>
                          </div>
 
-                    </section>)
-               {/* } */}
+                    </section>
+              }
 
                {
                     carts.length == 0 ?
                     (
                          <div className="container text-center py-3">
                               <h3>Your cart is empty</h3>
-                              <button type="button" className="btn btn-outline-secondary mb-4" onClick={()=>navigate(-1)}><FontAwesomeIcon icon={faArrowLeft} />Back To Shop</button>
+                              <button type="button" className="btn btn-outline-secondary mb-4" onClick={()=>navigate("/furnitures")}><FontAwesomeIcon icon={faArrowLeft} />Back To Shop</button>
                          </div>
                     ) : ''
                

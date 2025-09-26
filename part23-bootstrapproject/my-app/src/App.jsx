@@ -16,6 +16,8 @@ import ShowFurniture from "./features/furnitures/ShowFurniture.jsx";
 import FurniturePage from './pages/FurniturePage.jsx';
 import FurnitureDetalilPage from './pages/FurnitureDetailPage.jsx';
 import CartPage from './pages/CartPage.jsx';
+import CheckoutPage from './pages/CheckoutPage.jsx';
+
 
 
 function App() {
@@ -34,6 +36,8 @@ function App() {
 				{/* <Route path="/furnitures/:id" element={<ShowFurniture />} /> */}
 				<Route path="/furnitures/:id" element={<FurnitureDetalilPage />} />
 				<Route path="/carts" element={<CartPage />} />
+
+				<Route path="/checkout" element={<CheckoutPage />} />
 
 			</Routes>
 		<Footer />

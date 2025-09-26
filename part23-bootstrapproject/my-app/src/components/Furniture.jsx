@@ -51,22 +51,22 @@ const Furniture = ()=>{
      return (
          <>
           {/* Start Furniture Services Section */}
-          <section id="furniture" class="bg-light text-center py-3">
-               <div class="container">
+          <section id="furniture" className="bg-light text-center py-3">
+               <div className="container">
                     {/* start title */}
-                    <div class="row">
-                         <div class="col">
-                         <h3 class="titles">Furniture Services</h3>
-                         <p class="lead">Lorem Ipsum is simply dummy text of the printing and typesetting industry. </p>
+                    <div className="row">
+                         <div className="col">
+                         <h3 className="titles">Furniture Services</h3>
+                         <p className="lead">Lorem Ipsum is simply dummy text of the printing and typesetting industry. </p>
                          </div>
                     </div>
                     {/* end title */}
 
-                    <div class="row furicons">
+                    <div className="row furicons">
 
                          {
                               services.map((service)=>(
-                                   <div key={service.id} class="col-md-4">
+                                   <div key={service.id} className="col-md-4">
                                         <img src={service.image} alt="services6"/>
                                         <h4>{service.title}</h4>
                                         <p>{service.description}</p>

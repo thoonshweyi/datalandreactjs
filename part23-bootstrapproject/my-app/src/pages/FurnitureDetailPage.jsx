@@ -43,7 +43,20 @@ const FurnitureDetailPage = ()=>{
           const exists = cartdatas.find(cartdata=> cartdata.id == item.id);
 
           if(!exists){
-               cartdatas.push({...item,qty:1});
+               // method 1 all datas + qty
+               // cartdatas.push({...item,qty:1});
+               // localStorage.setItem("cart",JSON.stringify(cartdatas));
+          
+               // method 2 : select only necessary fields to store in cart
+               const cartitem = {
+                    thumbnail: item.thumbnail || item.images?.[0],
+                    id: item.id,
+                    title: item.title,
+                    description: item.description,
+                    price: item.price,
+                    qty: 1,
+               }
+               cartdatas.push(cartitem);
                localStorage.setItem("cart",JSON.stringify(cartdatas));
           }
           setAdded(true);
