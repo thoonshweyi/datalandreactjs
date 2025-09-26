@@ -93,8 +93,18 @@ npm install bootstrap @popperjs/core
           import 'lightbox2/dist/js/lightbox.min.js'
 
 
-     // Advertising Section  
-     10HW 
+ => React-Tostify (v ^11.0.5)
+ //        https://www.npmjs.com/package/react-toastify
+//        https://fkhadra.github.io/react-toastify/introduction
+
+     (i) install
+          $ npm install --save react-toastify
+
+     (ii) Import
+          // src/main.jsx     or   your Components
+          import { ToastContainer, toast } from 'react-toastify';
+          
+          <ToastContainer />
 -------------------------------------------------------------------------------------------------
      🔧 1. @fortawesome/react-fontawesome — React Component Library
           ✅ Purpose:
