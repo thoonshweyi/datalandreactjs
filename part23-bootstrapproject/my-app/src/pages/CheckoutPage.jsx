@@ -39,6 +39,13 @@ const CheckoutPage = ()=>{
           setForm({...form,[e.target.name]:e.target.value});
      }
 
+     const qtychangeHandler = (productid,delta)=>{
+          const updatecart = carts.map(cart=>( cart.id == productid ? {...cart,qty: Math.max(1,(cart.qty || 1) + delta)} : cart ));
+
+          setCarts(updatecart);
+          localStorage.setItem('cart',JSON.stringify(updatecart));
+     }
+
      const placeorderHandler = ()=>{
           if(!form.fullname || !form.email || !form.phone || !form.address){
                console.log("No form data");
@@ -57,7 +64,18 @@ const CheckoutPage = ()=>{
 
      return (
           <main className="bg-light">
-               <ToastContainer />
+               <ToastContainer
+                    position="bottom-right"
+                    autoClose={5000}
+                    hideProgressBar={false}
+                    newestOnTop={false}
+                    closeOnClick={false}
+                    rtl={false}
+                    pauseOnFocusLoss
+                    draggable
+                    pauseOnHover
+                    theme="light"
+               />
 
                {/* Banner */}
                <section className="text-center  text-light d-flex justifiy-content-center align-items-center" style={{
@@ -166,9 +184,15 @@ const CheckoutPage = ()=>{
                                                        <li key={cart.id} className="list-group-item d-flex justify-content-between">
                                                             <div>
                                                                  <h6>{cart.title}</h6>
-                                                                 <small className="text-muted">Qty: {cart.qty}</small>
+
+                                                                 {/* Qty Control */}
+                                                                 <div className="d-flex align-items-center mt-2">
+                                                                      <button type="button" className="btn btn-sm btn-outline-dark rounded-circle d-flex justify-content-center align-items-center" style={{width:"20px",height:"20px"}} onClick={()=>qtychangeHandler(cart.id, -1)}> - </button>
+                                                                      <small className="fw-bold mx-2">Qty: {cart.qty}</small>
+                                                                      <button type="button" className="btn btn-sm btn-outline-dark rounded-circle d-flex justify-content-center align-items-center" style={{width:"20px",height:"20px"}} onClick={()=>qtychangeHandler(cart.id, 1)}> + </button>
+                                                                 </div>
                                                             </div>
-                                                            <span>$ {(cart.price * cart.qty.toFixed(2)) }</span>
+                                                            <span>$ {(cart.price * cart.qty).toFixed(2) }</span>
                                                        </li>
                                                   ))
                                              }

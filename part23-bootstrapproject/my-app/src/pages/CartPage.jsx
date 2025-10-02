@@ -28,6 +28,13 @@ const CartPage = ()=>{
           localStorage.removeItem("cart");
      }
 
+     const qtychangeHandler = (productid,delta)=>{
+          const updatecart = carts.map(cart=>( cart.id == productid ? {...cart,qty: Math.max(1,(cart.qty || 1) + delta)} : cart ));
+
+          setCarts(updatecart);
+          localStorage.setItem('cart',JSON.stringify(updatecart));
+     }
+
      // if(carts.length == 0){
      //      return (
      //           <div className="container text-center py-3">
@@ -69,20 +76,27 @@ const CartPage = ()=>{
                          {/* product cards */}
                          <div className="row g-4">
                               {
-                                   carts.map(item=>(
-                                        <div key={item.id} className="col-lg-4 col-md-6 text-center">
+                                   carts.map(cart=>(
+                                        <div key={cart.id} className="col-lg-4 col-md-6 text-center">
                                              <div className="card h-100 shadow-sm">
-                                                  <img src={ item.thumbnail || item.images?.[0] } className="card-img-top p-3" style={{height:"200px",objectFit:"contain"}} alt={item.title} />
+                                                  <img src={ cart.thumbnail || cart.images?.[0] } className="card-img-top p-3" style={{height:"200px",objectFit:"contain"}} alt={cart.title} />
 
                                                   <div className="card-body d-flex flex-column">
-                                                       <span className="card-title">{item.title}</span>
-                                                       <span className="card-itle">{item.description?.substring(0.70)}....</span>
+                                                       <span className="card-title">{cart.title}</span>
+                                                       <span className="card-itle">{cart.description?.substring(0.70)}....</span>
                                                        
                                                        <div className="d-flex justify-content-between mt-auto">
                                                             <span className="fw-bold text-success">
-                                                                 <FontAwesomeIcon icon={faTag} className="me-1"/>{item.price}
+                                                                 <FontAwesomeIcon icon={faTag} className="me-1"/>{cart.price}
                                                             </span>
-                                                            <button className="btn btn-sm btn-outline-danger" onClick={()=>removeHandler(item.id)}><FontAwesomeIcon icon={faTrash} /></button>
+
+                                                            {/* Qty Control */}
+                                                            <div className="d-flex align-items-center mt-2">
+                                                                 <button type="button" className="btn btn-sm btn-outline-dark rounded-circle d-flex justify-content-center align-items-center" style={{width:"20px",height:"20px"}} onClick={()=>qtychangeHandler(cart.id, -1)}> - </button>
+                                                                 <small className="fw-bold mx-2">Qty: {cart.qty}</small>
+                                                                 <button type="button" className="btn btn-sm btn-outline-dark rounded-circle d-flex justify-content-center align-items-center" style={{width:"20px",height:"20px"}} onClick={()=>qtychangeHandler(cart.id, 1)}> + </button>
+                                                            </div>
+                                                            <button className="btn btn-sm btn-outline-danger" onClick={()=>removeHandler(cart.id)}><FontAwesomeIcon icon={faTrash} /></button>
                                                        </div>
                                                   </div>
                                              </div>
