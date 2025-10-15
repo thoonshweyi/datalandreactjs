@@ -84,12 +84,6 @@ const CheckoutPage = ()=>{
                navigate("/order-success",{state:{orderData}});
           }
 
-         
-          // toast.success(`Order placed successfully! Total: $ ${grandtotal.toFixed(2)} | Payment: ${payment}`)
-
-          // setTimeout(()=>{
-          //      navigate("/");
-          // },3000); // redirect to index after 3s
      };
 
      const removeHandler = (productid)=>{
