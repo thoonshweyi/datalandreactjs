@@ -1,7 +1,7 @@
 import React,{useState,useEffect} from "react";
 import {useNavigate} from "react-router";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
-import {faArrowLeft,faBoxOpen,faStar,faTrash,faSpinner,faExclamation,faTag,faShoppingCart,faTruck,faCreditCard,faMoneyBill} from "@fortawesome/free-solid-svg-icons"
+import {faArrowLeft,faTimes,faShoppingCart,faTruck,faCreditCard,faMoneyBill} from "@fortawesome/free-solid-svg-icons"
 import { ToastContainer, toast } from 'react-toastify';
 
 import banner4 from "../assets/img/banner/banner4.jpg"
@@ -19,10 +19,7 @@ const CheckoutPage = ()=>{
           zip:"",
           country:""
      });
-     const [payment,setPayment] = useState('card');
-
-     const [loading,setLoading] = useState(true);
-
+     const [payment,setPayment] = useState();
 
      useEffect(()=>{
           const getcarts = JSON.parse(localStorage.getItem('cart')) || []; // abccart // companynamecart
@@ -47,35 +44,63 @@ const CheckoutPage = ()=>{
      }
 
      const placeorderHandler = ()=>{
+
+          if(carts.length === 0){
+               toast.error("Your cart is empty");
+               return;
+          }
+
           if(!form.fullname || !form.email || !form.phone || !form.address){
                console.log("No form data");
                toast.error("Please fill in all require info!")
 
                return;
           }
-          localStorage.removeItem("cart");
-          toast.success(`Order placed successfully! Total: $ ${grandtotal.toFixed(2)} | Payment: ${payment}`)
 
+          const orderData = {
+               orderId: "ORD-"+Date.now(),
+               items: carts,
+               subtotal,
+               shipping,
+               tax,
+               grandtotal,
+               paymentmethod: payment,
+          }
 
-          setTimeout(()=>{
-               navigate("/");
-          },3000); // redirect to index after 3s
+          if(payment === "card"){
+               // redirect to payment gateway
+               toast.info("Redirecting to secure card payment....")
+
+          }else if(payment === "bank"){
+               // redirect to payment gateway
+               toast.info("Redirecting to bank info....")
+
+          }else if(payment === "cod"){
+               toast.success(`Order placed with Cash On Delivery!`);
+               localStorage.removeItem("cart");
+               setCarts([]);
+
+               // Navigate to order success page with orderData
+               navigate("/order-success",{state:{orderData}});
+          }
+
+         
+          // toast.success(`Order placed successfully! Total: $ ${grandtotal.toFixed(2)} | Payment: ${payment}`)
+
+          // setTimeout(()=>{
+          //      navigate("/");
+          // },3000); // redirect to index after 3s
      };
+
+     const removeHandler = (productid)=>{
+          const updatecart = carts.filter(cart => cart.id != productid);
+          setCarts(updatecart);
+          localStorage.setItem("cart", JSON.stringify(updatecart));
+     }
 
      return (
           <main className="bg-light">
-               <ToastContainer
-                    position="bottom-right"
-                    autoClose={5000}
-                    hideProgressBar={false}
-                    newestOnTop={false}
-                    closeOnClick={false}
-                    rtl={false}
-                    pauseOnFocusLoss
-                    draggable
-                    pauseOnHover
-                    theme="light"
-               />
+               <ToastContainer/>
 
                {/* Banner */}
                <section className="text-center  text-light d-flex justifiy-content-center align-items-center" style={{
@@ -180,10 +205,10 @@ const CheckoutPage = ()=>{
 
                                         <ul className="list-group mb-3">
                                              {
-                                                  carts.map(cart=>(
+                                                  carts.map((cart,index)=>(
                                                        <li key={cart.id} className="list-group-item d-flex justify-content-between">
                                                             <div>
-                                                                 <h6>{cart.title}</h6>
+                                                                 <h6 className="my-0"><span className="me-2">{index+1}. </span> {cart.title}</h6>
 
                                                                  {/* Qty Control */}
                                                                  <div className="d-flex align-items-center mt-2">
@@ -192,7 +217,11 @@ const CheckoutPage = ()=>{
                                                                       <button type="button" className="btn btn-sm btn-outline-dark rounded-circle d-flex justify-content-center align-items-center" style={{width:"20px",height:"20px"}} onClick={()=>qtychangeHandler(cart.id, 1)}> + </button>
                                                                  </div>
                                                             </div>
-                                                            <span>$ {(cart.price * cart.qty).toFixed(2) }</span>
+
+                                                            <div style={{flex:"none"}}>
+                                                                 <span>$ {(cart.price * cart.qty).toFixed(2) }</span>
+                                                                 <button type="button" className="btn btn-link text-sm" onClick={()=>removeHandler(cart.id)}><FontAwesomeIcon icon={faTimes} /></button>
+                                                            </div>
                                                        </li>
                                                   ))
                                              }
@@ -237,3 +266,53 @@ export default CheckoutPage;
 // =>react tostify
 //        https://www.npmjs.com/package/react-toastify
 //        https://fkhadra.github.io/react-toastify/introduction
+
+
+// 🧭 1. navigate
+
+// navigate is a function returned by the useNavigate() hook in React Router.
+
+// 🧳 2. The second parameter — { state: { orderData } }
+
+// This object allows you to pass additional data to the target route without using URL parameters or query strings.
+
+// Here,
+
+// state is a key defined by React Router.
+
+// { orderData } is the actual data you are passing.
+
+// So effectively, you’re sending this data along:
+
+// {
+//   state: {
+//     orderData: { id: 101, total: 50000, items: ["item1", "item2"] }
+//   }
+// }
+
+// 🎯 3. How to receive that data on the next page
+
+// On your /order-success page (or component), you retrieve it using the useLocation() hook.
+
+// Example:
+
+// import { useLocation } from "react-router-dom";
+
+// const OrderSuccess = () => {
+//   const location = useLocation();
+//   const { orderData } = location.state || {}; // prevent crash if state is undefined
+
+//   return (
+//     <div>
+//       <h1>Order Successful!</h1>
+//       <p>Order ID: {orderData?.id}</p>
+//       <p>Total: {orderData?.total}</p>
+//     </div>
+//   );
+// };
+
+// 🧠 Key Notes
+// Feature	Description
+// 🔒 Secure	The data is not visible in the URL (unlike query params).
+// 🕒 Temporary	The state only exists during navigation; if you refresh the page, it disappears.
+// 🧰 Alternative	If you want persistent data, store it in context, Redux, or localStorage.
