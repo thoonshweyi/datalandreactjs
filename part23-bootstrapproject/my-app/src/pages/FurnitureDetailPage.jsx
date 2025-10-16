@@ -14,6 +14,8 @@ const FurnitureDetailPage = ()=>{
      const [item,setItem] = useState(null); 
      const [loading,setLoading] = useState(true);
      const [added,setAdded] = useState(false);
+     const [selectedImage,setSelectedImage] = useState(null);
+
 
      useEffect(()=>{
           axios.get(`https://dummyjson.com/product/${id}`)
@@ -22,6 +24,8 @@ const FurnitureDetailPage = ()=>{
 
                setItem(res.data);
                setLoading(false);
+               setSelectedImage(res.data.thumbnail || res.data.images?.[0]) // default image
+               
 
                // console.log(item); // null
 
@@ -105,13 +109,15 @@ const FurnitureDetailPage = ()=>{
                          {/* product image gallery       */}
                          <div className="col-md-6 text-center">
                               <div className="card shadow-sm p-3">
-                                   <img src={ item.thumbnail || item.images?.[0] } className="img-fluid rounded" style={{maxHeight:"400px",objectFit:"contain",cursor:"pointer"}} alt={item.title} />
+                                   {/* <img src={ item.thumbnail || item.images?.[0] } className="img-fluid rounded" style={{maxHeight:"400px",objectFit:"contain",cursor:"pointer"}} alt={item.title} /> */}
+                                   <img src={ selectedImage } className="img-fluid rounded" style={{maxHeight:"400px",objectFit:"contain",cursor:"pointer"}} alt={item.title} />
+                             
                               </div>
 
                               <div className="d-flex justify-content-center gap-2 mt-3 flex-wrap">
                                    {
                                         item.images?.map((img,index)=>(
-                                             <img key={index} src={ img } className="img-thumbnail" style={{width:"80px",height:"80px",objectFit:"cover",cursor:"pointer"}} alt={`${item.title}-${index}`} />
+                                             <img key={index} src={ img } className={`img-thumbnail ${selectedImage === img ? "border border-primary border-2" : ""} `} style={{width:"80px",height:"80px",objectFit:"cover",cursor:"pointer"}} alt={`${item.title}-${index}`} onClick={()=>setSelectedImage(img)}/>
                                         ))
                                    }
                               </div>

@@ -180,10 +180,49 @@ const CheckoutPage = ()=>{
                                              <label htmlFor="cd" className="form-check-label">Credit / Debit Card</label>
                                         </div>
 
+                                        {/* show / hide card form */}
+                                        
+                                        {payment === "card" && (
+                                        <div className="border p-3 rounded bg-light">
+                                             <div className="mb-3">
+                                                  <label className="form-label" htmlFor="cardnumber">Card Number</label>
+                                                  <input type="text" id="cardnumber" className="form-control" placeholder="1234 5678 9012 3456" />
+                                             </div>
+
+
+                                             <div className="row">
+                                                  <div className="col-md-6 mb-3">
+                                                       <label className="form-label rounded-0" htmlFor="expirydate">Expiry Date</label>
+                                                       <input type="text" id="expirydate" className="form-control rounded-0" placeholder="MM/YY" />
+                                                  </div>
+                                                  <div className="col-md-6 mb-3">
+                                                       <label className="form-label rounded-0" htmlFor="cvv">CVV</label>
+                                                       <input type="text" id="cvv" className="form-control rounded-0" placeholder="1234" />
+                                                  </div>
+                                             </div>
+
+                                             <div className="mb-3">
+                                                  <label className="form-label" htmlFor="cardholdername">Cardholder Name</label>
+                                                  <input type="text" id="cardholdername" className="form-control" placeholder="Nyein Change Aung" />
+                                             </div>
+                                        </div>
+                                        )}
+
+                                        {/* show / hide bank transfer form */}
+
                                         <div className="form-check">
                                              <input type="radio" name="payment" id="bt" className="form-check-input" value="bank" onChange={(e)=>setPayment(e.target.value)}/> 
                                              <label htmlFor="bt" className="form-check-label">Bank Transfer</label>
                                         </div>
+                                        {payment === "bank" && (
+                                        <div className="border p-3 rounded bg-light">
+                                             <div className="alert alert-light" role="alsert">
+                                                  <span>KPB Bank Account: 01 2345 6789 012345 (Nyein Chan)</span>
+                                                  <br/>
+                                                  <span>CB Bank Account: 01 9876 5432 109876 (Nyein Chan)</span>
+                                             </div>
+                                        </div>
+                                        )}
 
                                         <div className="form-check">
                                              <input type="radio" name="payment" id="cod" className="form-check-input" value="cod" onChange={(e)=>setPayment(e.target.value)}/> 

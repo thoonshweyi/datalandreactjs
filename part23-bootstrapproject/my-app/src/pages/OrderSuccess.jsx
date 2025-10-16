@@ -22,7 +22,7 @@ const OrderSuccess = ()=>{
           return (
           <div className="container text-center py-5">
                <h2>No Order Found</h2>
-               <button className="btn btn-dark mt-3" onClick={navigate("/")}>Go Home</button>
+               <button className="btn btn-dark mt-3" onClick={()=>navigate("/")}>Go Home</button>
           </div>
           )
      }
