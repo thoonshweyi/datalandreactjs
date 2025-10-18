@@ -105,6 +105,44 @@ npm install bootstrap @popperjs/core
           import { ToastContainer, toast } from 'react-toastify';
           
           <ToastContainer />
+
+=> Stripe Payment Gateway
+     https://stripe.com/
+
+     (i) Install (in expressapi) (^19.1.0)
+     https://stripe.com/ > Developers > Libraries and SDKs > Developer Resources > Essentials , SDKs > Overview
+     > Stripe Node Library
+
+     or
+
+      https://stripe.com/ > Dashboard > Developers > Libraries and SDKs > Developer Resources > Essentials , SDKs > Overview
+     > Stripe Node Library
+
+     npm install stripe
+
+
+     (ii) Import server.js
+     const Stripe = require("stripe");
+
+     (iii) Config Route
+          https://stripe.com/ > Developers > Full API reference > Core Resources > Payment Intents > Create a PaymentIntent
+
+     (iv) Install (in my-app)
+        https://stripe.com/ > Developers > Libraries and SDKs > Developer Resources > Essentials , SDKs > React Strip.js
+
+        npm install --save @stripe/react-stripe-js @stripe/stripe-js
+
+
+
+
+
+
+
+
+
+
+
+
 -------------------------------------------------------------------------------------------------
      🔧 1. @fortawesome/react-fontawesome — React Component Library
           ✅ Purpose:

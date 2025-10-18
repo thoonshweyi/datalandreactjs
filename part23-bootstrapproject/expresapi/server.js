@@ -7,6 +7,9 @@ const PORT = 5000;
 app.use(cors());
 app.use(express.json());
 
+const Stripe = require("sk_test_51SIu70H9Bv5kOs06ajRZHudn7H0MDjmDH0iNIKaQzWLNvrXs9XMvN2Sy9fgPblusoYHWQ9AfT5MQdTZZo4HHCeJu008iNiD1LQ");
+
+
 let aboutUsDatas = {
      whyChooseUs: [
           {icon: "fa-solid fa-bolt",title: "Fast Delivery",desc: "Lorem Ipsum is simply dummy text of the printing and typesetting industry."},
@@ -77,4 +80,34 @@ app.get("/api/contacts/formsubmit",(req,res)=>{
      return res.status(200).json({success:true,message:"Message received."});
 })
 
-// 14CS
+// stripe payment gateway integraiton
+app.post('/create-payment-intent',async (req,res)=>{
+     try{
+
+          const { amount } = req.body;
+
+          // check if amount exists and is valid amount
+          if(!amount || amount <= 0){
+                return res.status(400).json({error:"Ivalid payment amount"}) 
+          }
+
+          // create paymentIntent
+          const paymentIntent = await stripe.paymentIntents.create({
+               amount: Math.round(amount * 100), // amount in cents *****
+               currency: 'usd',
+               automatic_payment_methods: {
+                    enabled: true,
+               },
+          });
+          // Example:
+          // if your grandtotal = $29.99 
+          // Stripe expects 2999 (not 29)
+
+          return res.status(400).json({
+
+          }) 
+
+     }catch(err){
+          return res.status(400).json({error:err.message})
+     }
+})

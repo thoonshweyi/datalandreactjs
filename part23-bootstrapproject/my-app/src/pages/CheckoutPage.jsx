@@ -179,9 +179,7 @@ const CheckoutPage = ()=>{
                                              <input type="radio" name="payment" id="cd" className="form-check-input" value="card" onChange={(e)=>setPayment(e.target.value)}/> 
                                              <label htmlFor="cd" className="form-check-label">Credit / Debit Card</label>
                                         </div>
-
                                         {/* show / hide card form */}
-                                        
                                         {payment === "card" && (
                                         <div className="border p-3 rounded bg-light">
                                              <div className="mb-3">
@@ -208,12 +206,11 @@ const CheckoutPage = ()=>{
                                         </div>
                                         )}
 
-                                        {/* show / hide bank transfer form */}
-
                                         <div className="form-check">
                                              <input type="radio" name="payment" id="bt" className="form-check-input" value="bank" onChange={(e)=>setPayment(e.target.value)}/> 
                                              <label htmlFor="bt" className="form-check-label">Bank Transfer</label>
                                         </div>
+                                        {/* show / hide bank transfer form */}
                                         {payment === "bank" && (
                                         <div className="border p-3 rounded bg-light">
                                              <div className="alert alert-light" role="alsert">
