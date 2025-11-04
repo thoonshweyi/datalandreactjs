@@ -3,9 +3,13 @@ import {useNavigate} from "react-router";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
 import {faArrowLeft,faTimes,faShoppingCart,faTruck,faCreditCard,faMoneyBill} from "@fortawesome/free-solid-svg-icons"
 import { ToastContainer, toast } from 'react-toastify';
+import {loadStripe} from "@stripe/stripe-js"
+import {Elements,CardElement, useStripe ,useElements} from "@stripe/react-stripe-js"
+import axios from "axios"
 
 import banner4 from "../assets/img/banner/banner4.jpg"
 
+const stripePromise = loadStripe('pk_test_51SIu70H9Bv5kOs06ZVWXdieZDRHargVJAz23lQHmFxyKaFwiTy5DRvoys2mApqnhL7hf15CqGo05vw08HkQr6cUM00OXUGH8lD');
 
 const CheckoutPage = ()=>{
      const navigate = useNavigate();
@@ -20,6 +24,9 @@ const CheckoutPage = ()=>{
           country:""
      });
      const [payment,setPayment] = useState();
+
+     const [bankSlip,setBankSlip] = useState(null);
+     const [slipPreview,setSlipPreview] = useState(null);
 
      useEffect(()=>{
           const getcarts = JSON.parse(localStorage.getItem('cart')) || []; // abccart // companynamecart
@@ -43,7 +50,17 @@ const CheckoutPage = ()=>{
           localStorage.setItem('cart',JSON.stringify(updatecart));
      }
 
-     const placeorderHandler = ()=>{
+     const bankslipHandler = (e)=>{
+          const file = e.target.files[0];
+
+          if(file){
+               setBankSlip(file);
+               setSlipPreview(URL.createObjectURL(file));
+          }
+          // console.log(file);
+     }
+
+     const placeorderHandler = async()=>{
 
           if(carts.length === 0){
                toast.error("Your cart is empty");
@@ -69,11 +86,41 @@ const CheckoutPage = ()=>{
 
           if(payment === "card"){
                // redirect to payment gateway
-               toast.info("Redirecting to secure card payment....")
-
+               toast.info("Proceed with card payment below.")
           }else if(payment === "bank"){
-               // redirect to payment gateway
-               toast.info("Redirecting to bank info....")
+              
+               if(!bankSlip){
+                    toast.error("Please upload your bank transfer slip!");
+                    return;
+               }
+
+               const formData = new FormData();
+               formData.append("fullname",form.fullname);
+               formData.append("email",form.email);
+               formData.append("phone",form.phone);
+               formData.append("address",form.address);
+               formData.append("zip",form.zip);
+               formData.append("country",form.country);
+               formData.append("grandtotal",grandtotal);
+               formData.append("bankslip",bankSlip); // ****
+
+               try{
+                    const res = await axios.post(`http://localhost:5000/api/payments/bank`,formData,{
+                         headers: {"Content-Type":"multipart/form-data"}
+                    })
+                    
+                    toast.success("Bank slip uploaded successfully!");
+
+                    localStorage.removeItem("cart");
+                    setCarts([]);
+
+                    navigate("/order-success",{state:{orderData}});
+
+               }catch(err){
+                    toast.error("Upload failed. Please try again.");
+                    console.error(err);
+               }
+
 
           }else if(payment === "cod"){
                toast.success(`Order placed with Cash On Delivery!`);
@@ -82,6 +129,9 @@ const CheckoutPage = ()=>{
 
                // Navigate to order success page with orderData
                navigate("/order-success",{state:{orderData}});
+          }else{
+               toast.error("Select a payment method.");
+               return;
           }
 
      };
@@ -90,6 +140,57 @@ const CheckoutPage = ()=>{
           const updatecart = carts.filter(cart => cart.id != productid);
           setCarts(updatecart);
           localStorage.setItem("cart", JSON.stringify(updatecart));
+     }
+     // Stripe Card Form Component
+     const StripePaymentForm = ({gdtotal,onSuccess})=>{
+          const stripe = useStripe();
+          const elements = useElements();
+          const [loading,setLoading] = useState(false);
+
+          if(!stripe || !elements) return;
+
+          const submitHandler = async(e)=>{
+               e.preventDefault();
+
+               setLoading(true); // start loading
+
+               try{
+                    const {data} = await axios.post(`http://localhost:5000/create-payment-intent`,{
+                         amount: gdtotal
+                    });
+                    console.log(data);
+
+                    const result = await stripe.confirmCardPayment(data.clientSecret,{
+                         payment_method: {
+                              card: elements.getElement(CardElement)
+                         }
+                    })
+
+                    console.log(result);
+
+                    if(result.error){
+                         toast.error(result.error.message);
+                    }else if(result.paymentIntent.status === "succeeded"){
+                         toast.success("Payment Successful!");
+                         onSuccess();
+                    }
+
+               }catch(error){
+                    toast.error(`Payment failed. Please try again!`);
+                    console.log(error);
+               }finally{
+                    setLoading(false); // stop loading
+               }
+          }
+
+          return (
+               <form onSubmit={submitHandler} className="mt-3">
+                    <CardElement className="form-control p-3 mb-3 border" />
+                    <button type="submit" className="w-100 btn btn-success d-flex justify-content-center align-items-center" disabled={loading}>
+                         { loading ? (<><div className="spinner-border spinner-border-sm me-2"></div> Processing....</>) : (<>Pay ${grandtotal.toFixed(2)}</>) }
+                    </button>
+               </form>
+          )
      }
 
      return (
@@ -175,12 +276,22 @@ const CheckoutPage = ()=>{
                               <div className="card shadow-sm mb-4">
                                    <div className="card-body">
                                         <h5><FontAwesomeIcon icon={faCreditCard} className="me-2"/> Payment Method</h5>
-                                        <div className="form-check">
-                                             <input type="radio" name="payment" id="cd" className="form-check-input" value="card" onChange={(e)=>setPayment(e.target.value)}/> 
-                                             <label htmlFor="cd" className="form-check-label">Credit / Debit Card</label>
-                                        </div>
+                                        
+                                        {/* Radio buttons */}
+
+                                        {
+                                             ["card","bank","cod"].map(method=>(
+                                                  <div className="form-check" key={method}>
+                                                       <input type="radio" name="payment" id={`${method}-payment`} className="form-check-input" value={method} onChange={(e)=>setPayment(e.target.value)}/> 
+                                                       <label htmlFor={`${method}-payment`} className="form-check-label">{
+                                                            method === "card" ? "Credit / Debit Card" : method === "bank" ? "Bank Transfer" : "Cash on Delivery"     
+                                                       }</label>
+                                                  </div>
+                                             ))
+                                        }
+                                      
                                         {/* show / hide card form */}
-                                        {payment === "card" && (
+                                        {/* {payment === "card" && (
                                         <div className="border p-3 rounded bg-light">
                                              <div className="mb-3">
                                                   <label className="form-label" htmlFor="cardnumber">Card Number</label>
@@ -204,27 +315,61 @@ const CheckoutPage = ()=>{
                                                   <input type="text" id="cardholdername" className="form-control" placeholder="Nyein Change Aung" />
                                              </div>
                                         </div>
+                                        )} */}
+
+                                             {/* show /hide stripe form */}
+                                        {payment === "card" && (
+                                             <Elements stripe={stripePromise}>
+                                                  <StripePaymentForm gdtotal={grandtotal} onSuccess={
+                                                       ()=>{
+
+                                                            const orderData = {
+                                                                 orderId: "ORD-"+Date.now(),
+                                                                 items: carts,
+                                                                 subtotal,
+                                                                 shipping,
+                                                                 tax,
+                                                                 grandtotal,
+                                                                 paymentmethod: payment,
+                                                            }
+
+                                                            localStorage.removeItem("cart");
+                                                            setCarts([]);
+
+                                                            // Navigate to order success page with orderData
+                                                            navigate("/order-success",{state:{orderData}});
+                                                       }
+                                                  }></StripePaymentForm>
+                                             </Elements>
                                         )}
 
-                                        <div className="form-check">
-                                             <input type="radio" name="payment" id="bt" className="form-check-input" value="bank" onChange={(e)=>setPayment(e.target.value)}/> 
-                                             <label htmlFor="bt" className="form-check-label">Bank Transfer</label>
-                                        </div>
                                         {/* show / hide bank transfer form */}
                                         {payment === "bank" && (
-                                        <div className="border p-3 rounded bg-light">
-                                             <div className="alert alert-light" role="alsert">
-                                                  <span>KPB Bank Account: 01 2345 6789 012345 (Nyein Chan)</span>
-                                                  <br/>
-                                                  <span>CB Bank Account: 01 9876 5432 109876 (Nyein Chan)</span>
-                                             </div>
+                                        <div className="bg-light border rounded p-3">
+                                             <h6>Bank Transfer Instructions</h6>
+                                             <p className="text-muted mb-2">Please transfer the total amount to our bank</p>
+                                             <ul>
+                                                  <li><strong>Bank: </strong> KBZ Pay</li>
+                                                  <li><strong>Kpay Name: </strong> Dataland Col,Ltd</li>
+                                                  <li><strong>Kpay No: </strong> 09422042225</li>
+                                             </ul>
+
+                                             <hr/>
+
+                                             <label className="form-label fw-bold">Upload Payment Slip *</label>
+                                             <input type="file" className="form-control mb-3" onChange={bankslipHandler} accept="image/*,application/pdf"/>
+                                        
+                                             {slipPreview &&(
+                                                  <div>
+                                                       <p className="mb-1">Preview:</p>
+                                                       <img src={slipPreview} className="img-fluid rounded border" alt="bank slip preview" style={{maxHeight:"250px",objectFit:""}} />
+                                                  </div>
+                                             )}
+                                             
                                         </div>
+
                                         )}
 
-                                        <div className="form-check">
-                                             <input type="radio" name="payment" id="cod" className="form-check-input" value="cod" onChange={(e)=>setPayment(e.target.value)}/> 
-                                             <label htmlFor="cod" className="form-check-label">Cash on Delivery</label>
-                                        </div>
                                    </div>
                               </div>
                          </div>
@@ -276,8 +421,19 @@ const CheckoutPage = ()=>{
                                                   <span>$ {grandtotal.toFixed(2)}</span>
                                              </li>
                                         </ul>
+                                        
 
-                                        <button type="button" className="w-100 btn btn-dark" onClick={placeorderHandler}> <FontAwesomeIcon icon={faMoneyBill} className="me-2" /> Place Order</button>
+                                        {/* button hide when "cad" selected  */}
+                                        {
+                                             payment !== "card" && (
+                                                  <button type="button" className="w-100 btn btn-dark" onClick={placeorderHandler}> 
+                                                  <FontAwesomeIcon icon={faMoneyBill} className="me-2" /> 
+                                                  {
+                                                  payment === "bank" ? "Pay with Bank" : payment === "cod" ? "Place Order" : "Select Payment Method"
+                                                  }
+                                                  </button>
+                                             )
+                                        }
                                    </div>
                               </div>
                          </div>

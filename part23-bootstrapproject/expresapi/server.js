@@ -1,14 +1,19 @@
-const express = require('express');
-const cors = require('cors'); // Cross-Origin Resource Sharing
+// const express = require('express');
+// const cors = require('cors'); // Cross-Origin Resource Sharing
+
 const {v4:uuidv4} = require('uuid');
 const app = express();
 const PORT = 5000;
 
+import express from "express";
+import cors from "cors"
+
+const Stripe = require("stripe");
+
 app.use(cors());
 app.use(express.json());
 
-const Stripe = require("sk_test_51SIu70H9Bv5kOs06ajRZHudn7H0MDjmDH0iNIKaQzWLNvrXs9XMvN2Sy9fgPblusoYHWQ9AfT5MQdTZZo4HHCeJu008iNiD1LQ");
-
+const stripe = Stripe('sk_test_51SIu70H9Bv5kOs06ajRZHudn7H0MDjmDH0iNIKaQzWLNvrXs9XMvN2Sy9fgPblusoYHWQ9AfT5MQdTZZo4HHCeJu008iNiD1LQ');
 
 let aboutUsDatas = {
      whyChooseUs: [
@@ -103,8 +108,8 @@ app.post('/create-payment-intent',async (req,res)=>{
           // if your grandtotal = $29.99 
           // Stripe expects 2999 (not 29)
 
-          return res.status(400).json({
-
+          return res.json({
+               clientSecret: paymentIntent.client_secret
           }) 
 
      }catch(err){
