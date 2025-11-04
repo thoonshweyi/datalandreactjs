@@ -13,7 +13,7 @@ const Stripe = require("stripe");
 app.use(cors());
 app.use(express.json());
 
-const stripe = Stripe('sk_test_51SIu70H9Bv5kOs06ajRZHudn7H0MDjmDH0iNIKaQzWLNvrXs9XMvN2Sy9fgPblusoYHWQ9AfT5MQdTZZo4HHCeJu008iNiD1LQ');
+const stripe = Stripe('');
 
 let aboutUsDatas = {
      whyChooseUs: [
