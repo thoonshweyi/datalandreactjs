@@ -102,7 +102,7 @@ const CheckoutPage = ()=>{
                formData.append("zip",form.zip);
                formData.append("country",form.country);
                formData.append("grandtotal",grandtotal);
-               formData.append("bankslip",bankSlip); // ****
+               formData.append("bankslip",bankSlip); // **** this name "bankslip" should match server side
 
                try{
                     const res = await axios.post(`http://localhost:5000/api/payments/bank`,formData,{
@@ -114,6 +114,7 @@ const CheckoutPage = ()=>{
                     localStorage.removeItem("cart");
                     setCarts([]);
 
+                    // Navigate to order success page with order data
                     navigate("/order-success",{state:{orderData}});
 
                }catch(err){

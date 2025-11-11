@@ -1,19 +1,38 @@
 // const express = require('express');
 // const cors = require('cors'); // Cross-Origin Resource Sharing
+// const Stripe = require("stripe");
+// const {v4:uuidv4} = require('uuid');
 
-const {v4:uuidv4} = require('uuid');
+
+import express from "express";
+import cors from "cors" // Cross-Origin Resource Sharing
+
+import Stripe from "stripe";
+import multer from "multer";
+
+import {v4 as uuidv4} from "uuid"
+import bodyParser from "body-parser";
+
+import path from "path";
+import fs from "fs";
+import {fileURLToPath} from "url";
+
 const app = express();
 const PORT = 5000;
 
-import express from "express";
-import cors from "cors"
+// console.log("Directory Global Variables: ",__dirname);
 
-const Stripe = require("stripe");
+
+// const filepath = "D:\datalandcourses\reactjsbatch1\part23-bootstrapproject\expresapi\server.js"
+// const dirname = path.dirname(filepath);
+// console.log(dirname); // D:\datalandcourses\reactjsbatch1\part23-bootstrapproject\expresapi
+
+
 
 app.use(cors());
 app.use(express.json());
 
-const stripe = Stripe('');
+const stripe = Stripe('sk_test_51SIu70H9Bv5kOs06ajRZHudn7H0MDjmDH0iNIKaQzWLNvrXs9XMvN2Sy9fgPblusoYHWQ9AfT5MQdTZZo4HHCeJu008iNiD1LQ');
 
 let aboutUsDatas = {
      whyChooseUs: [
@@ -115,4 +134,30 @@ app.post('/create-payment-intent',async (req,res)=>{
      }catch(err){
           return res.status(400).json({error:err.message})
      }
-})
+});
+
+// bank transfer
+// app.post("/api/payments/bank",upload.single('bankslip'),(req,res)=>{
+//      if(!req.file) return res.status(400).json({error:"Bank slip is required"});
+
+//      const orderData = {
+//           id: uuidv4(),
+
+//           fullname: req.body.fullname,
+//           email: req.body.email,
+//           phone: req.body.phone,
+//           address: req.body.address,
+//           zip: req.body.zip,
+//           country: req.body.country,
+//           grandtotal: req.body.grandtotal,
+//           bankslip: `/uploads/${req.file.filename}`,
+
+//           paymentmethod: "bank",
+//           status:"Pending Verification",
+//           createdAt: new Date()
+//      }
+
+//      console.log(`New Bank Order ${orderData}`)
+//      res.json({message:"Slip uploaded successfully",orderData})
+// });
+

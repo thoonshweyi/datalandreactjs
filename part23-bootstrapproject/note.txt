@@ -135,7 +135,12 @@ npm install bootstrap @popperjs/core
 
      https://stripe.com/ > Dashboard > Developers > Libraries and SDKs > Developer Resources > Essentials , SDKs > React Stripe.js
 
+=> multer (v ^2.0.2)
+     https://www.npmjs.com/package/multer
 
+     (i) install 
+     npm i multer
+------------------------------------------------------------------------------------------------------------------------
      =>🧩 Imagine a real-world example first
 
                1️⃣ You tell the waiter (React app):
