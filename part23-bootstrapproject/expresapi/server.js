@@ -145,16 +145,21 @@ if(!fs.existsSync(uploaddir)) fs.mkdirSync(uploaddir);
 
 // multer config
 const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, '/tmp/my-uploads')
-  },
+  destination:  (req, file, cb) => cb(null, uploaddir),
   filename: function (req, file, cb) {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
-    cb(null, file.fieldname + '-' + uniqueSuffix)
+    cb(null, `${uuidv4()}${path.extname(file.originalname)}`);
   }
 })
 
-const upload = multer({ storage: storage })
+const upload = multer({ 
+     storage: storage,
+     fileFilter: (req, file, cb) =>{
+          const allowed = ["image/jpg","image/jpeg","image/png", "application/pdf"];
+
+          allowed.includes(file.mimetype) ? cb(null, true) :  cb(new Error('Invalid File Type'))
+     }
+     
+})
 // bank transfer
 app.post("/api/payments/bank",upload.single('bankslip'),(req,res)=>{
      if(!req.file) return res.status(400).json({error:"Bank slip is required"});
@@ -176,7 +181,7 @@ app.post("/api/payments/bank",upload.single('bankslip'),(req,res)=>{
           createdAt: new Date()
      }
 
-     console.log(`New Bank Order ${orderData}`)
+     console.log(`New Bank Order`,orderData)
      res.json({message:"Slip uploaded successfully",orderData})
 });
 
