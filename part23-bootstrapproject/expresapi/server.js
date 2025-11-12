@@ -22,10 +22,11 @@ const PORT = 5000;
 
 // console.log("Directory Global Variables: ",__dirname);
 
-
-// const filepath = "D:\datalandcourses\reactjsbatch1\part23-bootstrapproject\expresapi\server.js"
-// const dirname = path.dirname(filepath);
-// console.log(dirname); // D:\datalandcourses\reactjsbatch1\part23-bootstrapproject\expresapi
+const filepath = fileURLToPath(import.meta.url); 
+const dirname = path.dirname(filepath);
+// console.log(import.meta.url); // file:///D:/datalandcourses/reactjsbatch1/part23-bootstrapproject/expresapi/server.js
+// console.log(filepath); // D:\datalandcourses\reactjsbatch1\part23-bootstrapproject\expresapi\server.js
+// console.log(dirname); /// D:\datalandcourses\reactjsbatch1\part23-bootstrapproject\expresapi
 
 
 
@@ -136,28 +137,46 @@ app.post('/create-payment-intent',async (req,res)=>{
      }
 });
 
+// Config Directory
+const uploaddir = path.join(dirname,'uploads');
+console.log(uploaddir); // D:\datalandcourses\reactjsbatch1\part23-bootstrapproject\expresapi\uploads
+if(!fs.existsSync(uploaddir)) fs.mkdirSync(uploaddir);
+
+
+// multer config
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, '/tmp/my-uploads')
+  },
+  filename: function (req, file, cb) {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
+    cb(null, file.fieldname + '-' + uniqueSuffix)
+  }
+})
+
+const upload = multer({ storage: storage })
 // bank transfer
-// app.post("/api/payments/bank",upload.single('bankslip'),(req,res)=>{
-//      if(!req.file) return res.status(400).json({error:"Bank slip is required"});
+app.post("/api/payments/bank",upload.single('bankslip'),(req,res)=>{
+     if(!req.file) return res.status(400).json({error:"Bank slip is required"});
 
-//      const orderData = {
-//           id: uuidv4(),
+     const orderData = {
+          id: uuidv4(),
 
-//           fullname: req.body.fullname,
-//           email: req.body.email,
-//           phone: req.body.phone,
-//           address: req.body.address,
-//           zip: req.body.zip,
-//           country: req.body.country,
-//           grandtotal: req.body.grandtotal,
-//           bankslip: `/uploads/${req.file.filename}`,
+          fullname: req.body.fullname,
+          email: req.body.email,
+          phone: req.body.phone,
+          address: req.body.address,
+          zip: req.body.zip,
+          country: req.body.country,
+          grandtotal: req.body.grandtotal,
+          bankslip: `/uploads/${req.file.filename}`,
 
-//           paymentmethod: "bank",
-//           status:"Pending Verification",
-//           createdAt: new Date()
-//      }
+          paymentmethod: "bank",
+          status:"Pending Verification",
+          createdAt: new Date()
+     }
 
-//      console.log(`New Bank Order ${orderData}`)
-//      res.json({message:"Slip uploaded successfully",orderData})
-// });
+     console.log(`New Bank Order ${orderData}`)
+     res.json({message:"Slip uploaded successfully",orderData})
+});
 
