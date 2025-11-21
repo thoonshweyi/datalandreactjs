@@ -11,10 +11,7 @@ const Header = ()=>{
             
             {/* Start Header Section */}
             <header>
-                {/* Start nav bar */}
-                    <Navbar />
-                {/* End nav bar */}
-            
+
                 {/* Start banner */}
 
                     <div className="text-light text-center text-md-end banners">
