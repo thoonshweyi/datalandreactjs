@@ -1,36 +1,63 @@
 import {createSlice,createAsyncThunk} from "@reduxjs/toolkit";
 import axios from "axios";
 
-const API_URL =  `https://dummyjson.com/product?limit=20&skip-0`;
+const API_URL =  `https://dummyjson.com/users?limit=`;
 
-export const fetchFurnitures = createAsyncThunk( "furnitures/fetckhFurniture", async()=>{
-     const res = await axios.get(`${API_URL}`);
-     return res.data.products;
+export const fetchCustomers = createAsyncThunk( "customers/fetchCustomer", async({limit=24}={})=>{
+     const {data} = await axios.get(`${API_URL}${limit}`);
+     // console.log(data);
+     console.log(data.users);
+
+     const customers = data.users.map(user=>({
+          id:user.id,
+          name: `${user.firstName} ${user.lastName}`,
+          company: `${user.company.name}`,
+          title: `${user.company.title}`,
+          city: `${user.address.city}`,
+          avatar: user.image,
+          review: "It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.",
+          favorite: false,
+          rating: (user.id % 5) + 1 // 1 to 5
+     }));
+
+     // console.log(customers);
+
+
+     return customers;
 });
 
 const customerSlice = createSlice({
-     name: 'furniture',
+     name: 'customers',
      initialState:{
           datas:[],
           loading:false,
           error: null
      },
+     reducers: {
+          toggleFavorite(state,action){
+               const id = action.payload;
+               const founddata = state.datas.find(data=>data.id === id);
+
+               if(founddata) founddata.favorite = !founddata.favorite;
+          }
+     },
      extraReducers: (builder)=>{
           builder
-               .addCase(fetchFurnitures.pending,(state)=>{
+               .addCase(fetchCustomers.pending,(state)=>{
                     state.loading =true;
                     state.error = null;
                })
-               .addCase(fetchFurnitures.fulfilled,(state,action)=>{
+               .addCase(fetchCustomers.fulfilled,(state,action)=>{
                     state.loading = false;
                     state.datas = action.payload;
-                    console.log(action.payload)
+                    // console.log(action.payload)
                })
-               .addCase(fetchFurnitures.rejected,(state,action)=>{
+               .addCase(fetchCustomers.rejected,(state,action)=>{
                     state.loading = false;
-                    state.error = action.error.message;
+                    state.error = action.error.message || "Failed to load customers";
                })
      }
 });
 
+export const {toggleFavorite} = customerSlice.actions;
 export default customerSlice.reducer;
