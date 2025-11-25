@@ -14,8 +14,8 @@ const PAGESIZE = 6;
 const CustomerPage = ()=>{
      const {loading,error,datas} = useSelector((state)=>state.customers)
      
-     const [searchItem,setSearchItem] = useState("");
-     const [filterDatas,setFilterDatas] = useState([]);
+     const [query,setQuery] = useState("");
+     const [page,setPage] = useState(1);
      
      const dispatch = useDispatch();
 
@@ -23,29 +23,47 @@ const CustomerPage = ()=>{
           dispatch(fetchCustomers({limit:30}));
      },[dispatch]);
 
-     useEffect(()=>{
+     // method 1
+     const getFilteredCustomers = ()=>{
+          const getqtext = query.trim().toLowerCase();
 
-          // console.log(datas);
+          if (!getqtext) return datas;
 
-          if(datas && datas.length > 0){
-               const filtered = datas.filter(data=>
-                    data.title.toLowerCase().includes(searchItem.toLowerCase()) ||
-                    data.description.toLowerCase().includes(searchItem.toLowerCase()) ||
-                    data.category.toLowerCase().includes(searchItem.toLowerCase())
-               )
+          return filtered = datas.filter(data=>
+               data.name.toLowerCase().includes(getqtext) ||
+               data.company.toLowerCase().includes(getqtext) ||
+               data.city.toLowerCase().includes(getqtext)
+          );
+     }
 
-               setFilterDatas(filtered);
-          }
-     },[searchItem,datas]);
+     const filtered = getFilteredCustomers(); // 30/6 = 5 pages
+
+     const totalPages = Math.max(1,Math.ceil(filtered.length / PAGESIZE)); // atleast 1 page
+     const pageItems = filtered.slice((page - 1) * PAGESIZE, page * PAGESIZE);
+
+     // [a,b,c,d,e,f,g,h,i,j,k,l] // page 1
+     // 0 1 2 3 4 5 6 7 8 9 10 11
+
+     // page 1 = 0 to 5  a to f
+     // page 2 = 6 to 11 g to l
+
+     // slice(0,6) = 0,1,2,3,4,5
+     // slice(6,12) = 6,7,8,9,10,11
+
+     // 1-1 * 6     , 1 * 6
+     // 0           , 6
+
+     // 2-1 * 6     , 2 * 6
+     // 6           , 12
 
      const searchHandler = (e)=>{
-          setSearchItem(e.target.value);
+          setQuery(e.target.value);
      }
      const clearHandler = ()=>{
-          setSearchItem("");
+          setQuery("");
      }
 
-     const displaydatas = searchItem ? filterDatas : datas;
+     const displaydatas = query ? filterDatas : datas;
 
      return (
           <main className="bg-dark text-light">
@@ -64,7 +82,7 @@ const CustomerPage = ()=>{
                          
                          {/* search box */}
                          <div className="mx-auto mt-3" style={{maxWidth:560}}>
-                              <input type="text" className="form-control form-control-lg"   placeholder="Search customers by name,description or category...." value={searchItem} onChange={searchHandler}  />
+                              <input type="text" className="form-control form-control-lg"   placeholder="Search customers by name,description or category...." value={query} onChange={searchHandler}  />
                          </div>
                     </div>
                </section>
@@ -116,56 +134,67 @@ const CustomerPage = ()=>{
 
                               {/*  cards */}
                               <div className="row g-4">
-                                   <div className="col-md-4 col-sm-6">
-                                        <div className="card h-100 border-0">
-                                             <div className="card-body">
-                                                  <div className="d-flex align-items-center">
-                                                       <img src="" className="rounded-circle border me-3" width="55" height="55" style={{objectFit:"cover"}} alt="" />
-                                                       <div>
-                                                            <h6 className="text-dark mb-0">Hsu Hsu</h6>
-                                                            <small className="text-muted">
-                                                                 manager @ abc.co.,ltd
-                                                            </small>
-                                                            <div className="small text-muted">Mandalay</div>
+
+                                   {
+                                        pageItems.map((pageItem)=>(
+                                             <div className="col-md-4 col-sm-6">
+                                                  <div className="card h-100 border-0">
+                                                       <div className="card-body">
+                                                            <div className="d-flex align-items-center">
+                                                                 <img src={pageItem.avatar} className="rounded-circle border me-3" width="55" height="55" style={{objectFit:"cover"}} alt={pageItem.name} />
+                                                                 <div>
+                                                                      <h6 className="text-dark mb-0">{pageItem.name}</h6>
+                                                                      <small className="text-muted">
+                                                                           {pageItem.title} @ {pageItem.company}
+                                                                      </small>
+                                                                      <div className="small text-muted">{pageItem.city}</div>
+                                                                 </div>
+                                                                 <button className="btn btn-sm btn-outline-danger ms-auto" title="Unfavourite"><FontAwesomeIcon icon={faHeart} /></button>
+                                                            </div>
+
+                                                            <p className="text-muted mt-3 mb-2" style={{minHeight:60}}>
+                                                                 {pageItem.review}
+                                                            </p>
+
+                                                            <div className="mt-auto">
+                                                                 <FontAwesomeIcon icon={faStar} />
+                                                            </div>
                                                        </div>
-                                                       <button className="btn btn-sm btn-outline-danger ms-auto" title="Unfavourite"><FontAwesomeIcon icon={faHeart} /></button>
-                                                  </div>
-
-                                                  <p className="text-muted mt-3 mb-2" style={{minHeight:60}}>
-                                                       Real Feedback from real people. We're proud to earn their trust.
-                                                  </p>
-
-                                                  <div className="mt-auto">
-                                                       <FontAwesomeIcon icon={faStar} />
                                                   </div>
                                              </div>
-                                        </div>
-                                   </div>
+                                        ))
+                                   }
 
-
-                                   <div className="text-center py-5">No customers found.</div>
+                                   {!pageItems.length && (
+                                        <div className="text-center py-5">No customers found.</div>
+                                   )}
+                                   
                               </div>
 
                               {/* pagination */}
-                              <nav className="mt-4">
-                                   <ul className="pagination justify-content-center">
-                                        <li className="page-item">
-                                             <button className="page-link">Prev</button>
-                                        </li>
-                                        <li className="page-item">
-                                             <button className="page-link">1</button>
-                                        </li>
-                                        <li className="page-item">
-                                             <button className="page-link">2</button>
-                                        </li>
-                                        <li className="page-item">
-                                             <button className="page-link">3</button>
-                                        </li>
-                                        <li className="page-item">
-                                             <button className="page-link">Next</button>
-                                        </li>
-                                   </ul>
-                              </nav>
+                              {
+                                   totalPages > 1 && (
+                                        <nav className="mt-4">
+                                             <ul className="pagination justify-content-center">
+                                                  <li className={`page-item ${page == 1 ? "disable": ""}`}>
+                                                       <button className="page-link" onClick={()=>setPage((curpage)=>Math.max(1,curpage-1))}>Prev</button>
+                                                  </li>
+                                                  {
+                                                       Array.from({length:totalPages}).map((_,idx)=>(
+                                                            <li className={`page-item ${page ===  idx+1 ? "active" : ''}`} key={idx}>
+                                                                 <button className="page-link" onClick={()=>setPage(idx+1)}>{idx+1}</button>
+                                                            </li>
+                                                       ))
+                                                  }
+                                                 
+                                                  
+                                                  <li  className={`page-item ${page == totalPages ? "disable": ""}`}>
+                                                       <button className="page-link" onClick={()=>setPage((curpage)=>Math.min(totalPages,curpage+1))}>Next</button>
+                                                  </li>
+                                             </ul>
+                                        </nav>
+                                   )
+                              }
                          </>
                     )}
 
