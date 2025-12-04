@@ -29,7 +29,7 @@ const CustomerPage = ()=>{
 
           if (!getqtext) return datas;
 
-          return filtered = datas.filter(data=>
+          return datas.filter(data=>
                data.name.toLowerCase().includes(getqtext) ||
                data.company.toLowerCase().includes(getqtext) ||
                data.city.toLowerCase().includes(getqtext)
@@ -56,14 +56,19 @@ const CustomerPage = ()=>{
      // 2-1 * 6     , 2 * 6
      // 6           , 12
 
+     useEffect(()=>{
+          // const result = Array(5);
+          // console.log(result); // (5) [empty × 5]
+          // console.log(result.length); // 5
+
+          // currentPage number on filter results which doesn't exist and empty
+          // if filtering changes and current page is out of range! reset to 1
+          if(page > totalPages) setPage(1);
+     },[page,totalPages]);
+
      const searchHandler = (e)=>{
           setQuery(e.target.value);
      }
-     const clearHandler = ()=>{
-          setQuery("");
-     }
-
-     const displaydatas = query ? filterDatas : datas;
 
      return (
           <main className="bg-dark text-light">
@@ -112,21 +117,21 @@ const CustomerPage = ()=>{
                                    <div className="col-md-4">
                                         <div className="h-100 bg-secondary text-center p-3">
                                              <h6 className="opacitiy-5 mb-1">Total Customers</h6>
-                                             <div className="display-6 fw-bold">50</div>
+                                             <div className="display-6 fw-bold">{filtered.length}</div>
                                         </div>
                                    </div>
 
                                    <div className="col-md-4">
                                         <div className="h-100 bg-secondary text-center p-3">
                                              <h6 className="opacitiy-75 mb-1">Avg. Rating</h6>
-                                             <div className="display-6 fw-bold">5.0 <FontAwesomeIcon icon={faStar} className="text-warning ms-1" /></div>
+                                             <div className="display-6 fw-bold">{filtered.length ? (filtered.reduce((start,end)=>start+end.rating,0) / filtered.length).toFixed(1) : 0} <FontAwesomeIcon icon={faStar} className="text-warning ms-1" /></div>
                                         </div>
                                    </div>
 
                                    <div className="col-md-4">
                                         <div className="h-100 bg-secondary text-center p-3">
                                              <h6 className="opacitiy-75 mb-1">Vreified</h6>
-                                             <div className="display-6 fw-bold"><FontAwesomeIcon icon={faCircleCheck} className="text-info me-1" /> 43+</div>
+                                             <div className="display-6 fw-bold"><FontAwesomeIcon icon={faCircleCheck} className="text-info me-1" /> {Math.ceil(filtered.length * 0.8)}+</div>
                                         </div>
                                    </div>
                               </div>
@@ -149,7 +154,9 @@ const CustomerPage = ()=>{
                                                                       </small>
                                                                       <div className="small text-muted">{pageItem.city}</div>
                                                                  </div>
-                                                                 <button className="btn btn-sm btn-outline-danger ms-auto" title="Unfavourite"><FontAwesomeIcon icon={faHeart} /></button>
+                                                                 <button className={`btn btn-sm ms-auto ${ pageItem.favorite ? 'btn-danger': 'btn-outline-danger'}`} title={pageItem.favorite ? 'Unfavorite': 'Favorite'} onClick={()=>dispatch(toggleFavorite(pageItem.id))}>
+                                                                      <FontAwesomeIcon icon={faHeart} />
+                                                                 </button>
                                                             </div>
 
                                                             <p className="text-muted mt-3 mb-2" style={{minHeight:60}}>
@@ -157,7 +164,16 @@ const CustomerPage = ()=>{
                                                             </p>
 
                                                             <div className="mt-auto">
-                                                                 <FontAwesomeIcon icon={faStar} />
+                                                                 {
+                                                                      // Array.from({length:5}).map((_,idx)=>(
+                                                                      //      <FontAwesomeIcon icon={faStar} className={ idx < pageItem.rating ? "text-warning me-1" : "text-secondary me-1" } />
+                                                                      // ))
+
+                                                                      [...Array(5)].map((_,idx)=>(
+                                                                           <FontAwesomeIcon icon={faStar} className={ idx < pageItem.rating ? "text-warning me-1" : "text-secondary me-1" } key={idx}/>
+                                                                      ))
+                                                                 }
+
                                                             </div>
                                                        </div>
                                                   </div>
