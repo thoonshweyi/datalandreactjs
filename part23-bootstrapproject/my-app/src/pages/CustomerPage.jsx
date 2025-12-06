@@ -1,4 +1,4 @@
-import React,{useState,useEffect} from "react";
+import React,{useState,useEffect,useMemo} from "react";
 import {useDispatch,useSelector} from "react-redux"
 import {Link} from "react-router";
 
@@ -24,9 +24,25 @@ const CustomerPage = ()=>{
      },[dispatch]);
 
      // method 1
-     const getFilteredCustomers = ()=>{
-          const getqtext = query.trim().toLowerCase();
+     // const getFilteredCustomers = ()=>{
+     //      const getqtext = query.trim().toLowerCase();
 
+     //      if (!getqtext) return datas;
+
+     //      return datas.filter(data=>
+     //           data.name.toLowerCase().includes(getqtext) ||
+     //           data.company.toLowerCase().includes(getqtext) ||
+     //           data.city.toLowerCase().includes(getqtext)
+     //      );
+     // }
+     // const filtered = getFilteredCustomers(); // 30/6 = 5 pages
+
+     // method 2 (for speedup ui = useMemo())
+
+     const filtered = useMemo(()=>{
+
+          const getqtext = query.trim().toLowerCase();
+          
           if (!getqtext) return datas;
 
           return datas.filter(data=>
@@ -34,9 +50,10 @@ const CustomerPage = ()=>{
                data.company.toLowerCase().includes(getqtext) ||
                data.city.toLowerCase().includes(getqtext)
           );
-     }
+     },[datas,query])
 
-     const filtered = getFilteredCustomers(); // 30/6 = 5 pages
+
+
 
      const totalPages = Math.max(1,Math.ceil(filtered.length / PAGESIZE)); // atleast 1 page
      const pageItems = filtered.slice((page - 1) * PAGESIZE, page * PAGESIZE);
@@ -223,3 +240,61 @@ const CustomerPage = ()=>{
 export default CustomerPage;
 
 {/* <FontAwesomeIcon icon="fa-solid fa-spinner" spin size="3x"/> */}
+
+
+// ✅ What is useMemo?
+
+// useMemo is a React Hook that helps you avoid doing expensive calculations again and again when a component re-renders.
+
+// It remembers (memoizes) the result of a function, and re-runs the function only when its dependencies change.
+
+// 🔍 What happens here?
+// 1️⃣ When query or datas changes
+
+// React will run the filtering function again.
+
+// 2️⃣ If query and datas do NOT change
+
+// React does not re-run the filter logic.
+// It simply returns the saved filtered result from memory.
+
+// 🧠 Why do we use useMemo here?
+
+// Filtering an array (especially large datasets) can be slow.
+
+// Without useMemo:
+
+// Every re-render → filter runs again
+
+// Even if query did not change
+
+// Unnecessary processing = slower UI
+
+// With useMemo:
+
+// React remembers the filtered result
+
+// Only recalculates when needed
+
+// 📦 When to use useMemo?
+
+// Use it when:
+
+// ✔ Heavy calculations
+// ✔ Large lists
+// ✔ Expensive operations (sorting, filtering, mapping)
+// ✔ Prevent unneeded re-renders
+
+// Don't use it everywhere — only where performance matters.
+
+// ✔ The REAL optimization
+
+// The optimization is:
+
+// ❌ Prevent running filter when component re-renders for other reasons
+
+// (e.g. parent component updates, state changes unrelated to datas/query)
+
+// ✔ But NOT optimizing filtering when query itself changes
+
+// Filtering must run again because the query text changed.
