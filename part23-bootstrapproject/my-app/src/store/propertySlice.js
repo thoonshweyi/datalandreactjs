@@ -20,12 +20,13 @@ export const fetchProperties = createAsyncThunk( "property/fetchProperty", async
           price: product.price,
           thumbnail: product.thumbnail || product.images?.[0],
           rating: product.rating,
+           
 
-          city: cities,
-          status: statuses,
-          beds: betsList,
-          baths: bathsList,
-          area: 600
+          city: cities[ idx % cities.length], // remainder 0%6 = 0, 1 % 6 = 1 2 3 4 5 0
+          status: statuses[ idx % statuses.length], // 0%3=0,1,2,0,1,2,....
+          beds: betsList[ idx % betsList.length], // 0%5 = 0,1,2,3,4,0,....
+          baths: bathsList[ idx % bathsList.length],  //  0%3 = 0,1,2,0,1,....
+          area: 600 + (idx % 10) * 100 // sqft 600 + 0, 600 + 1000 = 1600
 
      }));
 
@@ -50,7 +51,18 @@ const propertySlice = createSlice({
           }
      },
      reducers: {
-         
+         setFilter(state,action){
+               state.filters = {...state.filters,...action.payload};
+         },
+         clearFilters(state){
+               state.filters = {
+                    query: "",
+                    city: "all",
+                    status: "all",
+                    minprice: "",
+                    maxprice: ""
+               }
+         }
      },
      extraReducers: (builder)=>{
           builder
@@ -70,5 +82,7 @@ const propertySlice = createSlice({
      }
 });
 
-// export const {} = propertySlice.actions;
+export const {setFilter,clearFilters} = propertySlice.actions;
 export default propertySlice.reducer;
+
+// 

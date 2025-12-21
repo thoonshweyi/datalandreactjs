@@ -20,8 +20,19 @@ const PropertyPage = ()=>{
      const dispatch = useDispatch();
 
      useEffect(()=>{
-          dispatch(fetchProperties({limit:30}));
+          dispatch(fetchProperties({limit:60}));
      },[dispatch]);
+
+     // method 1
+     const cities = ["all","Yangon","Mandalay","PyinOoLwin","Taunggyi","Bago","Mawlamyine"];
+     const statuses = ["all","For Sale","For Rent","Sold Out"];
+
+     const formatUSD = (price)=>
+          new Intl.NumberFormat("en-US",{
+               style: "currency",
+               currency: "USD" // USD usd MMK mmk THB thb     
+     }).format(price || 0);
+     
 
      // method 1
      // const getFilteredCustomers = ()=>{
@@ -111,18 +122,22 @@ const PropertyPage = ()=>{
 
                                    <div className="col-md-2">
                                         <select name="city" className="form-select form-select-lg">
-                                             <option>All Cities</option>
-                                             <option>Yangon</option>
-                                             <option>Mandalay</option>
+                                             {
+                                                  cities.map((city,idx)=>(
+                                                       <option key={idx} value={city}>{city === "all" ? "All Cities" : city}</option>
+                                                  ))
+                                             }
+
                                         </select>
                                    </div>
 
                                    <div className="col-md-2">
                                         <select name="status" className="form-select form-select-lg">
-                                             <option>All Statuses</option>
-                                             <option>For Sale</option>
-                                             <option>For Rent</option>
-                                             <option>Sold Out</option>
+                                             {
+                                                  statuses.map((status,idx)=>(
+                                                       <option key={idx} value={status}>{status === "all" ? "All Statuses" : status}</option>
+                                                  ))
+                                             }
                                         </select>
                                    </div>
 
@@ -170,7 +185,7 @@ const PropertyPage = ()=>{
 
                                    <div className="col-md-4">
                                         <div className="h-100 bg-secondary text-center p-3">
-                                             <h6 className="opacitiy-75 mb-1">Avg. Rating</h6>
+                                             <h6 className="opacitiy-75 mb-1">Avg. Rating </h6>
                                              <div className="display-6 fw-bold">{filtered.length ? (filtered.reduce((start,end)=>start+end.rating,0) / filtered.length).toFixed(1) : 0} <FontAwesomeIcon icon={faStar} className="text-warning ms-1" /></div>
                                         </div>
                                    </div>
@@ -193,9 +208,11 @@ const PropertyPage = ()=>{
                                                   <div className="card h-100 border-0">
 
                                                        <div className="position-relative">
-                                                            <img src={pageItem.avatar} className="rounded-circle border me-3" width="55" height="55" style={{objectFit:"cover"}} alt={pageItem.name} />
-                                                            <span className="badge bg-success position-absolute top-0 start-0 m-2">For Sale</span>
-                                                            <span className="badge bg-dark position-absolute bottom-0 end-0 m-2">$1,000.00</span>
+                                                            <img src={pageItem.thumbnail} className="card-img-top" style={{height:150,objectFit:"cover"}} alt={pageItem.name} />
+                                                            <span className={`badge ${
+                                                                 pageItem.status === "Sold Out" ? "bg-danger" : pageItem.status == "For Rent" ? "bg-info" : "bg-success"
+                                                            } position-absolute top-0 start-0 m-2`}>{pageItem.status}</span>
+                                                            <span className="badge bg-dark position-absolute bottom-0 end-0 m-2">{formatUSD(pageItem.price)}</span>
                                                        </div>
                                                        <div className="card-body">
                                                             <h6 className="text-dark mb-0">{pageItem.name}</h6>
@@ -207,9 +224,9 @@ const PropertyPage = ()=>{
                                                                  </div>
 
                                                                  <div className="d-flex gap-3 small text-muted">
-                                                                      <span><FontAwesomeIcon  icon={faBed} className="me-1"/>2 bd</span>
-                                                                      <span><FontAwesomeIcon  icon={faBath} className="me-1"/>2 ba</span>
-                                                                      <span><FontAwesomeIcon  icon={faRulerCombined} className="me-1"/>1000 sqft</span>
+                                                                      <span><FontAwesomeIcon  icon={faBed} className="me-1"/>{pageItem.beds} bd</span>
+                                                                      <span><FontAwesomeIcon  icon={faBath} className="me-1"/>{pageItem.baths} ba</span>
+                                                                      <span><FontAwesomeIcon  icon={faRulerCombined} className="me-1"/>{pageItem.area} sqft</span>
                                                                  </div>
 
 
@@ -226,7 +243,7 @@ const PropertyPage = ()=>{
                               </div>
 
                               {/* pagination */}
-                              {
+                              {/* {
                                    totalPages > 1 && (
                                         <nav className="mt-4">
                                              <ul className="pagination justify-content-center">
@@ -248,6 +265,37 @@ const PropertyPage = ()=>{
                                              </ul>
                                         </nav>
                                    )
+                              } */}
+
+                              {/* pagination buttons */}
+                              {
+                                   <div className="d-flex flex-column flex-md-row justify-content-between align-items-center px-3 py-2 border-top small mt-4">
+                                        {/* left side info */}
+                                        <div className="mb-2 mb-md-0">
+                                             Page <strong>{page}</strong> of <strong>{totalPages}</strong> Total <strong>60</strong> properties.
+                                        </div>
+
+                                        {/* pagination btn */}
+                                        <nav className="">
+                                             <ul className="pagination pagination-sm mb-0">
+                                                  <li className={`page-item ${page == 1 ? "disable": ""}`}>
+                                                       <button className="page-link" onClick={()=>setPage((curpage)=>Math.max(1,curpage-1))}>Prev</button>
+                                                  </li>
+
+                                                  {/* page indicator */}
+                                                  <li className="page-item disabled">
+                                                       <span className="page-link">{page} / {totalPages}</span>
+                                                  </li>
+                                                  
+                                                  <li  className={`page-item ${page == totalPages ? "disable": ""}`}>
+                                                       <button className="page-link" onClick={()=>setPage((curpage)=>Math.min(totalPages,curpage+1))}>Next</button>
+                                                  </li>
+                                             </ul>
+                                        </nav>
+                                   </div>
+
+
+                                 
                               }
                          </>
                     )}
