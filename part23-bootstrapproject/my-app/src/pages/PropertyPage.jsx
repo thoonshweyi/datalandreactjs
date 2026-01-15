@@ -2,7 +2,7 @@ import React,{useState,useEffect,useMemo} from "react";
 import {useDispatch,useSelector} from "react-redux"
 import {Link} from "react-router";
 
-import {fetchProperties} from "./../store/propertySlice";
+import {fetchProperties,setFilter,clearFilters} from "./../store/propertySlice";
 
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
 import {faSpinner,faExclamation, faStar, faCircleCheck,faMapMarkerAlt ,faBed,faBath,faRulerCombined} from "@fortawesome/free-solid-svg-icons"
@@ -12,7 +12,7 @@ import banner4 from "../assets/img/banner/banner4.jpg"
 const PAGESIZE = 8;
 
 const PropertyPage = ()=>{
-     const {loading,error,datas} = useSelector((state)=>state.properties)
+     const {loading,error,datas,filters} = useSelector((state)=>state.properties)
      
      const [query,setQuery] = useState("");
      const [page,setPage] = useState(1);
@@ -24,44 +24,58 @@ const PropertyPage = ()=>{
      },[dispatch]);
 
      // method 1
-     const cities = ["all","Yangon","Mandalay","PyinOoLwin","Taunggyi","Bago","Mawlamyine"];
-     const statuses = ["all","For Sale","For Rent","Sold Out"];
+     // const cities = ["all","Yangon","Mandalay","PyinOoLwin","Taunggyi","Bago","Mawlamyine"];
+     // const statuses = ["all","For Sale","For Rent","Sold Out"];
+
+     // method 2
+     const cities = ["all",...Array.from(new Set(datas.map(data=>data.city)))];
+     const statuses = ["all",...Array.from(new Set(datas.map(data=>data.status)))];
+
 
      const formatUSD = (price)=>
           new Intl.NumberFormat("en-US",{
                style: "currency",
                currency: "USD" // USD usd MMK mmk THB thb     
      }).format(price || 0);
-     
-
-     // method 1
-     // const getFilteredCustomers = ()=>{
-     //      const getqtext = query.trim().toLowerCase();
-
-     //      if (!getqtext) return datas;
-
-     //      return datas.filter(data=>
-     //           data.name.toLowerCase().includes(getqtext) ||
-     //           data.company.toLowerCase().includes(getqtext) ||
-     //           data.city.toLowerCase().includes(getqtext)
-     //      );
-     // }
-     // const filtered = getFilteredCustomers(); // 30/6 = 5 pages
 
      // method 2 (for speedup ui = useMemo())
 
      const filtered = useMemo(()=>{
 
-          const getqtext = query.trim().toLowerCase();
-          
-          if (!getqtext) return datas;
+          const getqtext = filters.query.trim().toLowerCase();
+          const getmin = filters.minprice ? parseFloat(filters.minprice) : null ;    // **
+          const getmax = filters.maxprice ? parseFloat(filters.maxprice) : null ;    // **
 
-          return datas.filter(data=>
-               data.name.toLowerCase().includes(getqtext) ||
-               data.company.toLowerCase().includes(getqtext) ||
-               data.city.toLowerCase().includes(getqtext)
-          );
-     },[datas,query])
+          // console.log(!getqtext); // true
+          // console.log(getqtext);
+
+          // const numbers = [1,2,2,3,3,3,4];
+          // const uniquenums = new Set(numbers);
+          // console.log(uniquenums); // Set(4) {1, 2, 3, 4}
+          // console.log(...uniquenums); // 1 2 3 4
+          // console.log([...uniquenums]); // (4) [1, 2, 3, 4]
+
+          // const uniquenums = new Set(numbers).size;
+          // console.log(uniquenums); // 4
+
+          return datas.filter((data)=>{
+               const matchQuery = !getqtext || data.title.toLowerCase().includes(getqtext) || data.city.toLowerCase().includes(getqtext) || data.description.toLowerCase().includes(getqtext);
+               const matchCity = filters.city == "all" || data.city === filters.city;
+               const matchStatus = filters.status == "all" || data.status === filters.status;
+               const matchMin = getmin == null || data.price >= getmin;
+               const matchMax = getmax == null || data.price <= getmax;
+
+               
+               return matchQuery && matchCity && matchStatus && matchMin && matchMax
+          })
+
+     },[datas,filters]);
+
+     const onChangeHandler = (e)=>{
+          dispatch(setFilter({
+               [e.target.name]: e.target.value
+          }))
+     }
 
 
 
@@ -94,9 +108,6 @@ const PropertyPage = ()=>{
           if(page > totalPages) setPage(1);
      },[page,totalPages]);
 
-     const searchHandler = (e)=>{
-          setQuery(e.target.value);
-     }
 
      return (
           <main className="bg-dark text-light">
@@ -117,11 +128,11 @@ const PropertyPage = ()=>{
                          <div className="mx-auto mt-3" style={{maxWidth:880}}>
                               <div className="row g-2">
                                    <div className="col-md-5">
-                                        <input type="text" name="query" className="form-control form-control-lg"   placeholder="Search by title, city description...." />
+                                        <input type="text" name="query" className="form-control form-control-lg"   placeholder="Search by title, city description...." value={filters.query} onChange={onChangeHandler}/>
                                    </div>
 
                                    <div className="col-md-2">
-                                        <select name="city" className="form-select form-select-lg">
+                                        <select name="city" className="form-select form-select-lg"  value={filters.city} onChange={onChangeHandler}>
                                              {
                                                   cities.map((city,idx)=>(
                                                        <option key={idx} value={city}>{city === "all" ? "All Cities" : city}</option>
@@ -132,7 +143,7 @@ const PropertyPage = ()=>{
                                    </div>
 
                                    <div className="col-md-2">
-                                        <select name="status" className="form-select form-select-lg">
+                                        <select name="status" className="form-select form-select-lg"  value={filters.status} onChange={onChangeHandler}>
                                              {
                                                   statuses.map((status,idx)=>(
                                                        <option key={idx} value={status}>{status === "all" ? "All Statuses" : status}</option>
@@ -142,12 +153,12 @@ const PropertyPage = ()=>{
                                    </div>
 
                                    <div className="col-md-3 d-flex gap-2">
-                                        <input type="number" name="minprice" className="form-control form-control-lg" min="0" placeholder="Min $" />
-                                        <input type="number" name="maxprice" className="form-control form-control-lg" min="0" placeholder="Max $" />
+                                        <input type="number" name="minprice" className="form-control form-control-lg" min="0" placeholder="Min $"  value={filters.minprice} onChange={onChangeHandler}/>
+                                        <input type="number" name="maxprice" className="form-control form-control-lg" min="0" placeholder="Max $"  value={filters.maxprice} onChange={onChangeHandler}/>
                                    </div>
 
                                    <div className="text-end mt-2">
-                                        <button className="btn btn-outline-light btn-sm">Reset Filters</button>
+                                        <button className="btn btn-outline-light btn-sm" onClick={()=>dispatch(clearFilters())}>Reset Filters</button>
                                    </div>
                               </div>
                          </div>
@@ -193,7 +204,7 @@ const PropertyPage = ()=>{
                                    <div className="col-md-4">
                                         <div className="h-100 bg-secondary text-center p-3">
                                              <h6 className="opacitiy-75 mb-1">Cities Covered</h6>
-                                             <div className="display-6 fw-bold"><FontAwesomeIcon icon={faCircleCheck} className="text-info me-1" /> {Math.ceil(filtered.length * 0.8)}+</div>
+                                             <div className="display-6 fw-bold"><FontAwesomeIcon icon={faCircleCheck} className="text-info me-1" /> {new Set(filtered.map((filter)=>filter.city)).size}+</div>
                                         </div>
                                    </div>
                               </div>
@@ -215,11 +226,11 @@ const PropertyPage = ()=>{
                                                             <span className="badge bg-dark position-absolute bottom-0 end-0 m-2">{formatUSD(pageItem.price)}</span>
                                                        </div>
                                                        <div className="card-body">
-                                                            <h6 className="text-dark mb-0">{pageItem.name}</h6>
+                                                            <h6 className="text-dark mb-0">{pageItem.title}</h6>
                                                                  <div>
                                                                       <small className="text-muted mb-2">
                                                                            <FontAwesomeIcon icon={faMapMarkerAlt} className="me-1"/>
-                                                                           {pageItem.title}
+                                                                           {pageItem.city}
                                                                       </small>
                                                                  </div>
 
@@ -268,11 +279,11 @@ const PropertyPage = ()=>{
                               } */}
 
                               {/* pagination buttons */}
-                              {
+                              { filtered.length > 0 &&(
                                    <div className="d-flex flex-column flex-md-row justify-content-between align-items-center px-3 py-2 border-top small mt-4">
                                         {/* left side info */}
                                         <div className="mb-2 mb-md-0">
-                                             Page <strong>{page}</strong> of <strong>{totalPages}</strong> Total <strong>60</strong> properties.
+                                             Page <strong>{page}</strong> of <strong>{totalPages}</strong> Total <strong>{filtered.length}</strong> properties.
                                         </div>
 
                                         {/* pagination btn */}
@@ -293,6 +304,7 @@ const PropertyPage = ()=>{
                                              </ul>
                                         </nav>
                                    </div>
+                              )
 
 
                                  

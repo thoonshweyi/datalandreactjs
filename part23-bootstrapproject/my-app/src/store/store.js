@@ -4,6 +4,8 @@ import contactformReducer from "./contactFormSlice";
 import furnitureReducer from "./furnitureSlice";
 import customerReducer from "./customerSlice";
 import propertyReducer from "./propertySlice";
+import serviceReducer from "./serviceSlice";
+
 
 
 export default configureStore({
@@ -13,5 +15,6 @@ export default configureStore({
           furnitures: furnitureReducer,
           customers: customerReducer,
           properties: propertyReducer,
+          services: serviceReducer,
      }
 })
