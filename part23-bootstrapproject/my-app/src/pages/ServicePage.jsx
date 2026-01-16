@@ -5,7 +5,7 @@ import {Link} from "react-router";
 import {fetchProperties,setFilter,clearFilters} from "./../store/serviceSlice";
 
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
-import {faCogs,faFilter,faSearch} from "@fortawesome/free-solid-svg-icons"
+import {faCogs,faFilter,faRocket,faShieldAlt,faHeadset,faMoneyBillWave,faSearch,faCode,faPalette,faChartLine,faCloud,faDiamond,faCalendarCheck} from "@fortawesome/free-solid-svg-icons"
 import {faSpinner,faExclamation, faStar, faCircleCheck,faMapMarkerAlt ,faBed,faBath,faRulerCombined} from "@fortawesome/free-solid-svg-icons"
 
 import banner4 from "../assets/img/banner/banner4.jpg"
@@ -24,51 +24,7 @@ const ServicePage = ()=>{
           dispatch(fetchProperties({limit:60}));
      },[dispatch]);
 
-     const FilterSidebar = ()=>(
-          <div className="card mb-4">
-               <div className="card-header bg-primary text-white">
-                    <FontAwesomeIcon icon={faFilter} className="me-3" />Filter Services
-               </div>
-                <div className="card-body">
-                    <div className="mb-3">
-                         <label className="form-label">Category</label>
-                         <select className="form-select">
-                              <option value="all">All Categories</option>
-                              <option value="technology">Technology</option>
-                              <option value="design">Design</option>
-                              <option value="marketing">Marketing</option>
-                         </select>
-                    </div>
 
-                    <div className="mb-3">
-                         <label className="form-label">Price Range</label>
-
-                         <div className="row">
-                              <div className="col-6">
-                                   <input type="number" className="form-control" placeholder="Min" />
-                              </div>
-                              <div className="col-6">
-                                   <input type="number" className="form-control" placeholder="Max" />
-                              </div>
-                         </div>
-
-                    </div>
-
-                    <div className="mb-3">
-                         <label className="form-label">Minimum Rating</label>
-                         <select className="form-select">
-                              <option value="all">All Rating</option>
-                              <option value="technology">4.5+ Stars</option>
-                              <option value="design">4.0+ Stars</option>
-                              <option value="marketing">3.5+ Stars</option>
-                         </select>
-                    </div>
-
-                    <button className="w-100 btn btn-outline-secondary">Clear Filters</button>
-
-               </div>
-          </div>
-     )
 
      // method 1
      // const cities = ["all","Yangon","Mandalay","PyinOoLwin","Taunggyi","Bago","Mawlamyine"];
@@ -154,6 +110,83 @@ const ServicePage = ()=>{
           // if filtering changes and current page is out of range! reset to 1
           if(page > totalPages) setPage(1);
      },[page,totalPages]);
+
+     const FilterSidebar = ()=>(
+          <div className="card mb-4">
+               <div className="card-header bg-primary text-white">
+                    <FontAwesomeIcon icon={faFilter} className="me-3" />Filter Services
+               </div>
+                    <div className="card-body">
+                    <div className="mb-3">
+                         <label className="form-label">Category</label>
+                         <select className="form-select">
+                              <option value="all">All Categories</option>
+                              <option value="technology">Technology</option>
+                              <option value="design">Design</option>
+                              <option value="marketing">Marketing</option>
+                         </select>
+                    </div>
+
+                    <div className="mb-3">
+                         <label className="form-label">Price Range</label>
+
+                         <div className="row">
+                              <div className="col-6">
+                                   <input type="number" className="form-control" placeholder="Min" />
+                              </div>
+                              <div className="col-6">
+                                   <input type="number" className="form-control" placeholder="Max" />
+                              </div>
+                         </div>
+
+                    </div>
+
+                    <div className="mb-3">
+                         <label className="form-label">Minimum Rating</label>
+                         <select className="form-select">
+                              <option value="all">All Rating</option>
+                              <option value="technology">4.5+ Stars</option>
+                              <option value="design">4.0+ Stars</option>
+                              <option value="marketing">3.5+ Stars</option>
+                         </select>
+                    </div>
+
+                    <button className="w-100 btn btn-outline-secondary">Clear Filters</button>
+
+               </div>
+          </div>
+     );
+
+     const ServiceCategories = ()=>(
+          <div className="row text-center text-dark mb-3">
+               <div className="col-md-2 col-4 mb-3">
+                    <FontAwesomeIcon icon={faCode} size="2x" className="text-primary mb-2" />
+                    <h6>Development</h6>
+               </div>
+               <div className="col-md-2 col-4 mb-3">
+                    <FontAwesomeIcon icon={faPalette} size="2x" className="text-primary mb-2" />
+                    <h6>Design</h6>
+               </div>
+               <div className="col-md-2 col-4 mb-3">
+                    <FontAwesomeIcon icon={faChartLine} size="2x" className="text-primary mb-2" />
+                    <h6>Marketing</h6>
+               </div>
+               <div className="col-md-2 col-4 mb-3">
+                    <FontAwesomeIcon icon={faCloud} size="2x" className="text-primary mb-2" />
+                    <h6>Cloud</h6>
+               </div>
+               <div className="col-md-2 col-4 mb-3">
+                    <FontAwesomeIcon icon={faDiamond} size="2x" className="text-primary mb-2" />
+                    <h6>Branding</h6>
+               </div>
+               <div className="col-md-2 col-4 mb-3">
+                    <FontAwesomeIcon icon={faRocket} size="2x" className="text-primary mb-2" />
+                    <h6>Consulting</h6>
+               </div>
+          </div>
+     );
+
+     
 
 
      return (
@@ -266,6 +299,109 @@ const ServicePage = ()=>{
                 
 
                </section>
+          
+               {/* Why Choose Us */}
+               <section className="bg-primary text-white py-5">
+                    <div className="container">
+                         <div className="text-center mb-5">
+                              <h4 className="mb-3">Why Choose Our Sevices?</h4>
+                         </div>
+
+                         <div className="row text-center">
+                              <div className="col-md-3">
+                                   <FontAwesomeIcon icon={faRocket} size="3x" className="mb-3" />
+                                   <h5>Fast Delivery</h5>
+                                   <p>Real Feedback from real people. We're proud to earn their trust.</p>
+                              </div>
+                              <div className="col-md-3">
+                                   <FontAwesomeIcon icon={faShieldAlt} size="3x" className="mb-3" />
+                                   <h5>Quality Grarantee</h5>
+                                   <p>Real Feedback from real people. We're proud to earn their trust.</p>
+                              </div>
+                                <div className="col-md-3">
+                                   <FontAwesomeIcon icon={faHeadset} size="3x" className="mb-3" />
+                                   <h5>24/7 Support</h5>
+                                   <p>Real Feedback from real people. We're proud to earn their trust.</p>
+                              </div>
+                                <div className="col-md-3">
+                                   <FontAwesomeIcon icon={faMoneyBillWave} size="3x" className="mb-3" />
+                                   <h5>Competitive Pricing</h5>
+                                   <p>Real Feedback from real people. We're proud to earn their trust.</p>
+                              </div>
+                         </div>
+                    </div>
+               </section>
+
+                {/* Service Categories */}
+               <section className="bg-light py-5">
+                    <div className="container">
+                         <div className="text-center mb-5">
+                              <h4 className="text-dark mb-3">Service Categories</h4>
+                              <p className="text-muted">Real Feedback from real people. We're proud to earn their trust.</p>
+                         </div>
+
+                         <ServiceCategories />
+                    </div>
+               </section>
+
+               {/* Booking Modal */}
+               <div className="modal">
+                    <div className="modal-dialog modal-lg">
+                         <div className="modal-content">
+                              <div className="modal-header">
+                                   <h6 className="modal-title">Book Service:</h6>
+                                   <button type="button" className="btn-close"></button>
+                              </div>
+                              <div className="modal-body">
+                                   <form>
+                                        <div className="row g-3">
+                                             <div className="col-md-6">
+                                                  <label className="form-label">Full Name *</label>
+                                                  <input type="text" className="form-control" required />
+                                             </div>
+                                             <div className="col-md-6">
+                                                  <label className="form-label">Email *</label>
+                                                  <input type="email" className="form-control" required />
+                                             </div>
+                                             <div className="col-md-6">
+                                                  <label className="form-label">Company</label>
+                                                  <input type="text" className="form-control" required />
+                                             </div>
+                                             <div className="col-md-6">
+                                                  <label className="form-label">Timeline</label>
+                                                  <select className="form-select">
+                                                       <option value="">Select timeline</option>
+                                                       <option value="urgent">Urgent (1-2 weeks)</option>
+                                                       <option value="standard">Standard (3-4 weeks)</option>
+                                                       <option value="flexible">Flexible (1-2 months)</option>
+                                                  </select>
+                                             </div>
+                                             <div className="col-md-12">
+                                                  <label className="form-label">Budget Range</label>
+                                                  <select className="form-select">
+                                                       <option value="">Select bugdet</option>
+                                                       <option value="1000-5000">$1,000 - $5,000</option>
+                                                       <option value="5000-10000">$5,000 - $10,000</option>
+                                                       <option value="10000-25000">$10,000 - $25,000</option>
+                                                       <option value="25000+">$25,000+</option>
+                                                  </select>
+                                             </div>
+                                             <div className="col-md-12">
+                                                  <label className="form-label">Project Requirements</label>
+                                                  <textarea className="form-control" row="4" placeholder="Descrie your project requirements in detail...."/>
+                                             </div>
+                                        </div>
+                                        <div className="modal-footer mt-3">
+                                             <button type="button" className="btn btn-secondary">Cancel</button>
+                                             <button type="submit" className="btn btn-primary ms-2"><FontAwesomeIcon icon={faCalendarCheck} className="me-2"/>Confirm Booking</button>
+                                        </div>
+                                   </form>
+                              </div>
+
+                             
+                         </div>
+                    </div>
+               </div>
           </main>
      )
 };
