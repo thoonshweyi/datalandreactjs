@@ -5,12 +5,10 @@ import {Link} from "react-router";
 import {fetchProperties,setFilter,clearFilters} from "./../store/serviceSlice";
 
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
-import {faCogs,faFilter,faRocket,faShieldAlt,faHeadset,faMoneyBillWave,faSearch,faCode,faPalette,faChartLine,faCloud,faDiamond,faCalendarCheck} from "@fortawesome/free-solid-svg-icons"
+import {faCogs,faFilter,faRocket,faShieldAlt,faHeadset,faMoneyBillWave,faSearch,faCode,faPalette,faChartLine,faCloud,faDiamond,faCalendarCheck,faClock,faUsers,faCheckCircle} from "@fortawesome/free-solid-svg-icons"
 import {faSpinner,faExclamation, faStar, faCircleCheck,faMapMarkerAlt ,faBed,faBath,faRulerCombined} from "@fortawesome/free-solid-svg-icons"
 
 import banner4 from "../assets/img/banner/banner4.jpg"
-
-const PAGESIZE = 8;
 
 const ServicePage = ()=>{
      const {loading,error,datas,filters} = useSelector((state)=>state.properties)
@@ -24,42 +22,19 @@ const ServicePage = ()=>{
           dispatch(fetchProperties({limit:60}));
      },[dispatch]);
 
+     const modalHandler = ()=>{
 
+     };
 
-     // method 1
-     // const cities = ["all","Yangon","Mandalay","PyinOoLwin","Taunggyi","Bago","Mawlamyine"];
-     // const statuses = ["all","For Sale","For Rent","Sold Out"];
-
-     // method 2
-     const cities = ["all",...Array.from(new Set(datas.map(data=>data.city)))];
-     const statuses = ["all",...Array.from(new Set(datas.map(data=>data.status)))];
-
-
-     const formatUSD = (price)=>
-          new Intl.NumberFormat("en-US",{
-               style: "currency",
-               currency: "USD" // USD usd MMK mmk THB thb     
-     }).format(price || 0);
-
-     // method 2 (for speedup ui = useMemo())
+     const bookingSubmitHandler = (e)=>{
+          e.preventDefault();
+     }
 
      const filtered = useMemo(()=>{
 
           const getqtext = filters.query.trim().toLowerCase();
           const getmin = filters.minprice ? parseFloat(filters.minprice) : null ;    // **
           const getmax = filters.maxprice ? parseFloat(filters.maxprice) : null ;    // **
-
-          // console.log(!getqtext); // true
-          // console.log(getqtext);
-
-          // const numbers = [1,2,2,3,3,3,4];
-          // const uniquenums = new Set(numbers);
-          // console.log(uniquenums); // Set(4) {1, 2, 3, 4}
-          // console.log(...uniquenums); // 1 2 3 4
-          // console.log([...uniquenums]); // (4) [1, 2, 3, 4]
-
-          // const uniquenums = new Set(numbers).size;
-          // console.log(uniquenums); // 4
 
           return datas.filter((data)=>{
                const matchQuery = !getqtext || data.title.toLowerCase().includes(getqtext) || data.city.toLowerCase().includes(getqtext) || data.description.toLowerCase().includes(getqtext);
@@ -80,36 +55,58 @@ const ServicePage = ()=>{
           }))
      }
 
+     const ServiceCard = ({service})=>(
+          <div className="col-md-4 col-sm-6 mb-3">
+               <div className="card h-100">
+
+                    <div className="position-relative">
+                         <img src={service.image} className="card-img-top" style={{height:'150px',objectFit:"cover"}} alt={service.name} />
+                         <div className="position-absolute top-0 start-0 m-3">
+                              <span className="rating bg-warning text-dark">
+                                   <FontAwesomeIcon icon={faStar} className="me-1" />
+                                   {service.rating}
+                              </span>
+                         </div>
+                         <div className="position-absolute top-0 end-0 m-3">
+                              <span className="badge bg-primary">{service.category}</span>
+                         </div>
+                    </div>
+                    <div className="card-body">
+                         <h6 className="card-title text-dark mb-0">{service.name}</h6>
+                         <p className="card-text text-muted">{service.description}</p>
+                         <div class="">
+                              <div className="d-flex flex-wrap gap-1 mb-2">
+                                   <span className="badge bg-light text-dark small"></span>
+                              </div>
+                         </div>
+                             
+                         <div className="mb-3">
+                              <div className="row text-center small text-muted">
+                                   <div className="col-4">
+                                        <FontAwesomeIcon icon={faClock} className="d-block mb-1" />
+                                        {service.duration}
+                                   </div>
+                                   <div className="col-4">
+                                        <FontAwesomeIcon icon={faUsers} className="d-block mb-1" />
+                                        {service.review}
+                                   </div>
+                                   <div className="col-4">
+                                        <FontAwesomeIcon icon={faCheckCircle} className="d-block mb-1" />
+                                        {service.support}
+                                   </div>
+                              </div>
+                         </div>
+
+                         <div className="d-flex justify-content-between align-items-center">
+                              <h4 className="text-primary mb-0">${service.price.toLocaleString()}</h4>
+                              <button type="button" className="btn btn-primary" onClick={()=>modalHandler()}>Book Now</button>
+                         </div>
 
 
-
-     const totalPages = Math.max(1,Math.ceil(filtered.length / PAGESIZE)); // atleast 1 page
-     const pageItems = filtered.slice((page - 1) * PAGESIZE, page * PAGESIZE);
-
-     // [a,b,c,d,e,f,g,h,i,j,k,l] // page 1
-     // 0 1 2 3 4 5 6 7 8 9 10 11
-
-     // page 1 = 0 to 5  a to f
-     // page 2 = 6 to 11 g to l
-
-     // slice(0,6) = 0,1,2,3,4,5
-     // slice(6,12) = 6,7,8,9,10,11
-
-     // 1-1 * 6     , 1 * 6
-     // 0           , 6
-
-     // 2-1 * 6     , 2 * 6
-     // 6           , 12
-
-     useEffect(()=>{
-          // const result = Array(5);
-          // console.log(result); // (5) [empty × 5]
-          // console.log(result.length); // 5
-
-          // currentPage number on filter results which doesn't exist and empty
-          // if filtering changes and current page is out of range! reset to 1
-          if(page > totalPages) setPage(1);
-     },[page,totalPages]);
+                    </div>
+               </div>
+          </div>
+     )
 
      const FilterSidebar = ()=>(
           <div className="card mb-4">
@@ -249,45 +246,7 @@ const ServicePage = ()=>{
                                                   
                                         {/*  cards */}
                                         <div className="row g-4">
-
-                                             {
-                                                  pageItems.map((pageItem)=>(
-                                                       <div className="col-md-3 col-sm-6" key={pageItem.id}>
-                                                            <div className="card h-100 border-0">
-
-                                                                 <div className="position-relative">
-                                                                      <img src={pageItem.thumbnail} className="card-img-top" style={{height:150,objectFit:"cover"}} alt={pageItem.name} />
-                                                                      <span className={`badge ${
-                                                                           pageItem.status === "Sold Out" ? "bg-danger" : pageItem.status == "For Rent" ? "bg-info" : "bg-success"
-                                                                      } position-absolute top-0 start-0 m-2`}>{pageItem.status}</span>
-                                                                      <span className="badge bg-dark position-absolute bottom-0 end-0 m-2">{formatUSD(pageItem.price)}</span>
-                                                                 </div>
-                                                                 <div className="card-body">
-                                                                      <h6 className="text-dark mb-0">{pageItem.title}</h6>
-                                                                           <div>
-                                                                                <small className="text-muted mb-2">
-                                                                                     <FontAwesomeIcon icon={faMapMarkerAlt} className="me-1"/>
-                                                                                     {pageItem.city}
-                                                                                </small>
-                                                                           </div>
-
-                                                                           <div className="d-flex gap-3 small text-muted">
-                                                                                <span><FontAwesomeIcon  icon={faBed} className="me-1"/>{pageItem.beds} bd</span>
-                                                                                <span><FontAwesomeIcon  icon={faBath} className="me-1"/>{pageItem.baths} ba</span>
-                                                                                <span><FontAwesomeIcon  icon={faRulerCombined} className="me-1"/>{pageItem.area} sqft</span>
-                                                                           </div>
-
-
-                                                                 </div>
-                                                            </div>
-                                                       </div>
-                                                  ))
-                                             }
-
-                                             {!pageItems.length && (
-                                                  <div className="text-center py-5">No properties found.</div>
-                                             )}
-                                             
+                                             {/* <ServiceCard service={service}/> */}
                                         </div>
                                    </div>
                               </div>
