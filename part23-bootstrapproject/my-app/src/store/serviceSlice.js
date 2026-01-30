@@ -10,7 +10,8 @@ const mockdatas = [
           description: "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
           price: 5000,
           duration: "4-6 weeks",
-          image: "https://blog.zegocloud.com/wp-content/uploads/2024/03/types-of-web-development-services.jpg`",
+          // image: "https://blog.zegocloud.com/wp-content/uploads/2024/03/types-of-web-development-services.jpg`",
+          image: `https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSvR-_E8NnfyIBV7oZp-DjXRb7lbDzQ3u3eWw&s`,
           features: ["Responsive Design","SEO Optimized","Fast Loading","Cross-browser Compatible"],
           rating: 4.8,
           review: 124,
@@ -25,7 +26,7 @@ const mockdatas = [
           duration: "6-8 weeks",
           image: "https://www.webtekdigital.com/wp-content/uploads/2024/10/1711974550479.jpeg",
           features: ["Native Performance","Offline Capability","Push Notifications"],
-          rating: 4.8,
+          rating: 4.9,
           review: 89,
           support: "10 months free support"
      },
@@ -38,7 +39,7 @@ const mockdatas = [
           duration: "2-3 weeks",
           image: "https://admin.wac.co/uploads/Blog%20Media/ux_ui-01-3_5915c7e99f7fc2e0.jpg",
           features: ["User Research","Wireframing","Prototyping"],
-          rating: 4.8,
+          rating: 4.7,
           review: 156,
           support: "3 months free support"
      },
@@ -75,55 +76,63 @@ const mockdatas = [
           description: "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
           price: 2500,
           duration: "3-4 weeks",
-          image: "https://www.accesscreative.ac.uk/wp-content/uploads/2024/07/Graphic-design-students-on-work-experience.jpg",
+          // image: "https://www.accesscreative.ac.uk/wp-content/uploads/2024/07/Graphic-design-students-on-work-experience.jpg",
+          image: "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcSymqb5gXo-xcYRRhl-sjMXiXx3Xd_CqbhNwLLMFljO8usafb91",
           features: ["Logo Design","Color Theory"],
-          rating: 4.8,
+          rating: 4.9,
           review: 178,
           support: "Unlimited support"
      }
 ];
 
-const API_URL =  `https://dummyjson.com/products?limit=`;
+const servicesAPI = {
+     fetchServices : async()=>{
+          return mockdatas;
+     },
+     bookService: async(serviceID,bookingData)=>{
+          const data = {
+               id: Date.now(),
+               serviceID,
+               ...bookingData,
+               status: "confirmed",
+               bookingDate: new Date().toISOString()
+          };
+          console.log(`Service ${serviceID} booked with data: ${data}`);
 
-export const fetchProperties = createAsyncThunk( "property/fetchProperty", async({limit=24}={})=>{
-     const {data} = await axios.get(`${API_URL}${limit}`);
-     console.log(data);
-     // console.log(data.users);
+          return data;
 
-     const cities = ["Yangon","Mandalay","PyinOoLwin","Taunggyi","Bago","Mawlamyine"];
-     const statuses = ["For Sale","For Rent","Sold Out"];
-     const betsList = [1,2,3,4,5];
-     const bathsList = [1,2,3];
+     }
+}
 
-     const props = data.products.map((product,idx)=>({
-          id: product.id,
-          title: product.title,
-          description: product.description,
-          price: product.price,
-          thumbnail: product.thumbnail || product.images?.[0],
-          rating: product.rating,
-           
+// const API_URL =  `https://dummyjson.com/products?limit=`;
 
-          city: cities[ idx % cities.length], // remainder 0%6 = 0, 1 % 6 = 1 2 3 4 5 0
-          status: statuses[ idx % statuses.length], // 0%3=0,1,2,0,1,2,....
-          beds: betsList[ idx % betsList.length], // 0%5 = 0,1,2,3,4,0,....
-          baths: bathsList[ idx % bathsList.length],  //  0%3 = 0,1,2,0,1,....
-          area: 600 + (idx % 10) * 100 // sqft 600 + 0, 600 + 1000 = 1600
+export const fetchServices = createAsyncThunk( "services/fetchServices", async(_,{rejectWithValue})=>{
+   try{
+     const data = await servicesAPI.fetchServices();
+     return data;
+   }catch(error){
+     return rejectWithValue(error.message);
+   }
+});
 
-     }));
-
-     console.log(props);
-
-
-     return props;
+export const fetchBookServices = createAsyncThunk( "services/fetchBookServices", async({serviceID,bookingDate},{rejectWithValue})=>{
+   try{
+     const data = await servicesAPI.bookService(serviceID,bookingDate);
+     return data;
+   }catch(error){
+     return rejectWithValue(error.message);
+   }
 });
 
 const serviceSlice = createSlice({
      name: 'services',
      initialState:{
           datas:[],
+          bookings: [],
           loading:false,
           error: null,
+          bookingLoading: false,
+          bookingError: null,
           filters: {
                category: 'all',
                priceRange: {min:0,max:10000},
@@ -131,7 +140,11 @@ const serviceSlice = createSlice({
           }
      },
      reducers: {
-         setFilter(state,action){
+          clearError:(state)=>{
+               state.error = null,
+               state.bookingError = null
+          },
+         setFilters(state,action){
                state.filters = {...state.filters,...action.payload};
          },
          clearFilters(state){
@@ -144,23 +157,38 @@ const serviceSlice = createSlice({
      },
      extraReducers: (builder)=>{
           builder
-               .addCase(fetchProperties.pending,(state)=>{
+               // Fetch Services
+               .addCase(fetchServices.pending,(state)=>{
                     state.loading =true;
                     state.error = null;
                })
-               .addCase(fetchProperties.fulfilled,(state,action)=>{
+               .addCase(fetchServices.fulfilled,(state,action)=>{
                     state.loading = false;
                     state.datas = action.payload;
                     // console.log(action.payload)
                })
-               .addCase(fetchProperties.rejected,(state,action)=>{
+               .addCase(fetchServices.rejected,(state,action)=>{
                     state.loading = false;
-                    state.error = action.error.message || "Failed to load properties";
+                    state.error = action.error.message || "Failed to load services";
+               })
+               // Fetch Book Services
+               .addCase(fetchBookServices.pending,(state)=>{
+                    state.bookingLoading =true;
+                    state.bookingError = null;
+               })
+               .addCase(fetchBookServices.fulfilled,(state,action)=>{
+                    state.bookingLoading = false;
+                    state.bookings.push(action.payload);
+                    // console.log(action.payload)
+               })
+               .addCase(fetchBookServices.rejected,(state,action)=>{
+                    state.bookingLoading = false;
+                    state.bookingError = action.error.message || "Failed to load booking services";
                })
      }
 });
 
-export const {setFilter,clearFilters} = serviceSlice.actions;
+export const {clearError,setFilters,clearFilters} = serviceSlice.actions;
 export default serviceSlice.reducer;
 
 // 

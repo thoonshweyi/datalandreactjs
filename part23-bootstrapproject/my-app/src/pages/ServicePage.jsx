@@ -2,7 +2,7 @@ import React,{useState,useEffect,useMemo} from "react";
 import {useDispatch,useSelector} from "react-redux"
 import {Link} from "react-router";
 
-import {fetchProperties,setFilter,clearFilters} from "./../store/serviceSlice";
+import {fetchServices,fetchBookServices,setFilters,clearFilters,clearError} from "./../store/serviceSlice";
 
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
 import {faCogs,faFilter,faRocket,faShieldAlt,faHeadset,faMoneyBillWave,faSearch,faCode,faPalette,faChartLine,faCloud,faDiamond,faCalendarCheck,faClock,faUsers,faCheckCircle} from "@fortawesome/free-solid-svg-icons"
@@ -11,46 +11,87 @@ import {faSpinner,faExclamation, faStar, faCircleCheck,faMapMarkerAlt ,faBed,faB
 import banner4 from "../assets/img/banner/banner4.jpg"
 
 const ServicePage = ()=>{
-     const {loading,error,datas,filters} = useSelector((state)=>state.properties)
+     const {datas,loading,error,bookings,bookingLoading,bookingError,filters} = useSelector((state)=>state.services)
      
      const [query,setQuery] = useState("");
-     const [page,setPage] = useState(1);
-     
+     const [selectedService,setSelectedService] = useState(null);
+     const [showBookingModal,setShowBookingModal] =useState(false);
+     const [bookingForm,setBookingForm] = useState({
+          name: "",
+          email: "",
+          company: "",
+          timeline: "",
+          budget: "",
+          requirements: ""
+     })
+
      const dispatch = useDispatch();
 
      useEffect(()=>{
-          dispatch(fetchProperties({limit:60}));
+          dispatch(fetchServices());
      },[dispatch]);
 
-     const modalHandler = ()=>{
-
+     const bookingServiceHandler = (service)=>{
+          setSelectedService(service);
+          setShowBookingModal(true);
      };
 
      const bookingSubmitHandler = (e)=>{
           e.preventDefault();
+
+          dispatch(fetchBookServices({
+               serviceID: selectedService.id,
+               bookingData: bookingForm
+          })).then(result=>{
+               console.log(result);
+               if(result.meta.requestStatus === "fulfilled"){
+                    setShowBookingModal(false);
+                    setBookingForm({
+                         name: "",
+                         email: "",
+                         company: "",
+                         timeline: "",
+                         budget: "",
+                         requirements: ""
+                    });
+
+                    alert("Booking confirmed We will contact you soon.");
+               }
+               
+          })
      }
 
-     const filtered = useMemo(()=>{
+     const filteredServices = datas.filter(service=>{
+          if(filters.category !== 'all' && filters.category !== service.category) return false;
+          if(service.price < filters.priceRange.min || service.price > filters.priceRange.max) return false;
+          if(service.rating < filters.rating) return false;
+          
+          if(query && !service.name.toLowerCase().includes(query.toLowerCase())  && !service.description.toLowerCase().includes(query.toLowerCase())) return false;
 
-          const getqtext = filters.query.trim().toLowerCase();
-          const getmin = filters.minprice ? parseFloat(filters.minprice) : null ;    // **
-          const getmax = filters.maxprice ? parseFloat(filters.maxprice) : null ;    // **
+          return true;
+     })
 
-          return datas.filter((data)=>{
-               const matchQuery = !getqtext || data.title.toLowerCase().includes(getqtext) || data.city.toLowerCase().includes(getqtext) || data.description.toLowerCase().includes(getqtext);
-               const matchCity = filters.city == "all" || data.city === filters.city;
-               const matchStatus = filters.status == "all" || data.status === filters.status;
-               const matchMin = getmin == null || data.price >= getmin;
-               const matchMax = getmax == null || data.price <= getmax;
+     // const filtered = useMemo(()=>{
+
+     //      const getqtext = filters.query.trim().toLowerCase();
+     //      const getmin = filters.minprice ? parseFloat(filters.minprice) : null ;    // **
+     //      const getmax = filters.maxprice ? parseFloat(filters.maxprice) : null ;    // **
+
+     //      return datas.filter((data)=>{
+     //           const matchQuery = !getqtext || data.title.toLowerCase().includes(getqtext) || data.city.toLowerCase().includes(getqtext) || data.description.toLowerCase().includes(getqtext);
+     //           const matchCity = filters.city == "all" || data.city === filters.city;
+     //           const matchStatus = filters.status == "all" || data.status === filters.status;
+     //           const matchMin = getmin == null || data.price >= getmin;
+     //           const matchMax = getmax == null || data.price <= getmax;
 
                
-               return matchQuery && matchCity && matchStatus && matchMin && matchMax
-          })
+     //           return matchQuery && matchCity && matchStatus && matchMin && matchMax
+     //      })
 
-     },[datas,filters]);
+     // },[datas,filters]);
 
      const onChangeHandler = (e)=>{
-          dispatch(setFilter({
+          dispatch(setFilters({
                [e.target.name]: e.target.value
           }))
      }
@@ -62,7 +103,7 @@ const ServicePage = ()=>{
                     <div className="position-relative">
                          <img src={service.image} className="card-img-top" style={{height:'150px',objectFit:"cover"}} alt={service.name} />
                          <div className="position-absolute top-0 start-0 m-3">
-                              <span className="rating bg-warning text-dark">
+                              <span className="badge bg-warning text-dark">
                                    <FontAwesomeIcon icon={faStar} className="me-1" />
                                    {service.rating}
                               </span>
@@ -99,7 +140,7 @@ const ServicePage = ()=>{
 
                          <div className="d-flex justify-content-between align-items-center">
                               <h4 className="text-primary mb-0">${service.price.toLocaleString()}</h4>
-                              <button type="button" className="btn btn-primary" onClick={()=>modalHandler()}>Book Now</button>
+                              <button type="button" className="btn btn-primary" onClick={()=>bookingServiceHandler(service)}>Book Now</button>
                          </div>
 
 
@@ -116,7 +157,7 @@ const ServicePage = ()=>{
                     <div className="card-body">
                     <div className="mb-3">
                          <label className="form-label">Category</label>
-                         <select className="form-select">
+                         <select className="form-select" value={filters.category} onChange={(e)=>dispatch(setFilters({category:e.target.value}))}>
                               <option value="all">All Categories</option>
                               <option value="technology">Technology</option>
                               <option value="design">Design</option>
@@ -129,10 +170,14 @@ const ServicePage = ()=>{
 
                          <div className="row">
                               <div className="col-6">
-                                   <input type="number" className="form-control" placeholder="Min" />
+                                   <input type="number" className="form-control" placeholder="Min"  value={filters.priceRange.min} onChange={(e)=>dispatch(setFilters({
+                                        priceRange: {...filters.priceRange,min:parseInt(e.target.value)}
+                                   }))}/>
                               </div>
                               <div className="col-6">
-                                   <input type="number" className="form-control" placeholder="Max" />
+                                   <input type="number" className="form-control" placeholder="Max"  value={filters.priceRange.max} onChange={(e)=>dispatch(setFilters({
+                                        priceRange: {...filters.priceRange,max:parseInt(e.target.value)}
+                                   }))}/>
                               </div>
                          </div>
 
@@ -140,15 +185,15 @@ const ServicePage = ()=>{
 
                     <div className="mb-3">
                          <label className="form-label">Minimum Rating</label>
-                         <select className="form-select">
-                              <option value="all">All Rating</option>
-                              <option value="technology">4.5+ Stars</option>
-                              <option value="design">4.0+ Stars</option>
-                              <option value="marketing">3.5+ Stars</option>
+                         <select className="form-select" value={filters.rating} onChange={(e)=>dispatch(setFilters({rating:parseFloat(e.target.value)}))}>
+                              <option value="0">All Rating</option>
+                              <option value="4.5">4.5+ Stars</option>
+                              <option value="4.9">4.9+ Stars</option>
+                              <option value="5">5+ Stars</option>
                          </select>
                     </div>
 
-                    <button className="w-100 btn btn-outline-secondary">Clear Filters</button>
+                    <button className="w-100 btn btn-outline-secondary" onClick={()=>dispatch(clearFilters())}>Clear Filters</button>
 
                </div>
           </div>
@@ -206,8 +251,8 @@ const ServicePage = ()=>{
                               <div className="col-md-8">
                                    <form >
                                         <div className="input-group input-group-lg">
-                                             <input type="text" name="query" className="form-control"   placeholder="Search services...." value={filters.query} onChange={onChangeHandler}/>
-                                             <button type="submit" className="btn btn-primary"><FontAwesomeIcon icon={faSearch} className="me-2"/> Search</button>
+                                             <input type="text" name="query" className="form-control"   placeholder="Search services...." value={query} onChange={(e)=>setQuery(e.target.value)}/>
+                                             <button type="button" className="btn btn-primary"><FontAwesomeIcon icon={faSearch} className="me-2"/> Search</button>
                                         </div>
                                    </form>
                               </div>
@@ -243,10 +288,11 @@ const ServicePage = ()=>{
 
                                    {/* services grid */}
                                    <div className="col-md-9">
-                                                  
-                                        {/*  cards */}
-                                        <div className="row g-4">
-                                             {/* <ServiceCard service={service}/> */}
+                                        {/* Services Grid */}
+                                        <div className="row">
+                                             {!loading && !error && filteredServices.map(service=>(
+                                                  <ServiceCard key={service.id} service={service} />
+                                             ))}
                                         </div>
                                    </div>
                               </div>
@@ -304,63 +350,82 @@ const ServicePage = ()=>{
                </section>
 
                {/* Booking Modal */}
-               <div className="modal">
-                    <div className="modal-dialog modal-lg">
-                         <div className="modal-content">
-                              <div className="modal-header">
-                                   <h6 className="modal-title">Book Service:</h6>
-                                   <button type="button" className="btn-close"></button>
-                              </div>
-                              <div className="modal-body">
-                                   <form>
-                                        <div className="row g-3">
-                                             <div className="col-md-6">
-                                                  <label className="form-label">Full Name *</label>
-                                                  <input type="text" className="form-control" required />
-                                             </div>
-                                             <div className="col-md-6">
-                                                  <label className="form-label">Email *</label>
-                                                  <input type="email" className="form-control" required />
-                                             </div>
-                                             <div className="col-md-6">
-                                                  <label className="form-label">Company</label>
-                                                  <input type="text" className="form-control" required />
-                                             </div>
-                                             <div className="col-md-6">
-                                                  <label className="form-label">Timeline</label>
-                                                  <select className="form-select">
-                                                       <option value="">Select timeline</option>
-                                                       <option value="urgent">Urgent (1-2 weeks)</option>
-                                                       <option value="standard">Standard (3-4 weeks)</option>
-                                                       <option value="flexible">Flexible (1-2 months)</option>
-                                                  </select>
-                                             </div>
-                                             <div className="col-md-12">
-                                                  <label className="form-label">Budget Range</label>
-                                                  <select className="form-select">
-                                                       <option value="">Select bugdet</option>
-                                                       <option value="1000-5000">$1,000 - $5,000</option>
-                                                       <option value="5000-10000">$5,000 - $10,000</option>
-                                                       <option value="10000-25000">$10,000 - $25,000</option>
-                                                       <option value="25000+">$25,000+</option>
-                                                  </select>
-                                             </div>
-                                             <div className="col-md-12">
-                                                  <label className="form-label">Project Requirements</label>
-                                                  <textarea className="form-control" row="4" placeholder="Descrie your project requirements in detail...."/>
-                                             </div>
+               {
+                    showBookingModal && selectedService && (
+                         <div className="modal show d-block">
+                              <div className="modal-dialog modal-lg">
+                                   <div className="modal-content">
+                                        <div className="modal-header">
+                                             <h6 className="modal-title">Book Service: {selectedService.name}</h6>
+                                             <button type="button" className="btn-close" onClick={()=>setShowBookingModal(false)}></button>
                                         </div>
-                                        <div className="modal-footer mt-3">
-                                             <button type="button" className="btn btn-secondary">Cancel</button>
-                                             <button type="submit" className="btn btn-primary ms-2"><FontAwesomeIcon icon={faCalendarCheck} className="me-2"/>Confirm Booking</button>
+                                        <div className="modal-body">
+                                             <form onSubmit={bookingSubmitHandler}>
+                                                  <div className="row g-3">
+                                                       <div className="col-md-6">
+                                                            <label className="form-label">Full Name *</label>
+                                                            <input type="text" className="form-control" value={bookingForm.name} onChange={(e)=>setBookingForm({...bookingForm,name:e.target.value})} required />
+                                                       </div>
+                                                       <div className="col-md-6">
+                                                            <label className="form-label">Email *</label>
+                                                            <input type="email" className="form-control" required onChange={(e)=>setBookingForm({...bookingForm,email:e.target.value})}/>
+                                                       </div>
+                                                       <div className="col-md-6">
+                                                            <label className="form-label">Company</label>
+                                                            <input type="text" className="form-control" required onChange={(e)=>setBookingForm({...bookingForm,company:e.target.value})} />
+                                                       </div>
+                                                       <div className="col-md-6">
+                                                            <label className="form-label">Timeline</label>
+                                                            <select className="form-select" onChange={(e)=>setBookingForm({...bookingForm,timeline:e.target.value})}>
+                                                                 <option value="">Select timeline</option>
+                                                                 <option value="urgent">Urgent (1-2 weeks)</option>
+                                                                 <option value="standard">Standard (3-4 weeks)</option>
+                                                                 <option value="flexible">Flexible (1-2 months)</option>
+                                                            </select>
+                                                       </div>
+                                                       <div className="col-md-12">
+                                                            <label className="form-label">Budget Range</label>
+                                                            <select className="form-select" onChange={(e)=>setBookingForm({...bookingForm,budget:e.target.value})}>
+                                                                 <option value="">Select bugdet</option>
+                                                                 <option value="1000-5000">$1,000 - $5,000</option>
+                                                                 <option value="5000-10000">$5,000 - $10,000</option>
+                                                                 <option value="10000-25000">$10,000 - $25,000</option>
+                                                                 <option value="25000+">$25,000+</option>
+                                                            </select>
+                                                       </div>
+                                                       <div className="col-md-12">
+                                                            <label className="form-label">Project Requirements</label>
+                                                            <textarea className="form-control" row="4" placeholder="Descrie your project requirements in detail...." onChange={(e)=>setBookingForm({...bookingForm,requirements:e.target.value})}></textarea>
+                                                       </div>
+                                                  </div>
+                                                  <div className="modal-footer mt-3">
+                                                       <button type="button" className="btn btn-secondary"  onClick={()=>setShowBookingModal(false)}>Cancel</button>
+                                                       <button type="submit" className="btn btn-primary ms-2" disable={bookingLoading}>
+                                                       {
+                                                       bookingLoading ? (
+                                                            <>
+                                                            <FontAwesomeIcon icon={faSpinner} spin className="me-2"  />
+                                                            Processing....
+                                                            </>
+                                                       ) : (
+                                                            <>
+                                                                 <FontAwesomeIcon icon={faCalendarCheck} className="me-2"  />
+                                                                 Confirm Booking
+                                                            </>
+                                                       )
+                                                       }
+                                                       </button>
+                                                  </div>
+                                             </form>
                                         </div>
-                                   </form>
-                              </div>
 
-                             
+                                   
+                                   </div>
+                              </div>
                          </div>
-                    </div>
-               </div>
+                    )
+               }
+
           </main>
      )
 };
