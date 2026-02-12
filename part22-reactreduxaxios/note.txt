@@ -1,0 +1,11 @@
+
+
+=Install UUID
+npm install uuid // under expressserver
+
+eg: w;ith destructuring
+const {v4:uuidv4} = require('uuid')
+
+eg: without destructuring
+const uuid = requuire('uuid')
+const uuid = uuid.v4

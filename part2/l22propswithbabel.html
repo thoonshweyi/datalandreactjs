@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+     <head>
+          <title>Working with Babel - Props</title>
+     </head>
+     <body>
+          <div id="root"></div>
+          
+          <script crossorigin="" src="https://unpkg.com/react@18/umd/react.development.js"></script>
+          <script crossorigin="" src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+          <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+          <script type="text/babel">
+
+
+               const Greeting = (item)=>(
+                    <div>
+                         <p>{item.caption}</p>
+                    </div>
+               );
+               // const Greeting = (prop)=>{
+               //      return(
+               //      <div>
+               //           <p>{prop.caption}</p>
+               //      </div>
+               //      )
+               // };
+
+               const Content = ({post})=>{
+                    return(
+                    <div>
+                         <p>{post}</p>
+                    </div>
+                    )
+               };
+
+               const Bye = ({caption,design})=><i>{caption} , Design By {design}</i>;
+
+               const Appreciate = ({caption})=>(
+                    <div>
+                         <p>{caption}</p>
+                         <Bye caption="Bye Bye" design="Data Land Technology"/>
+                    </div>
+               );
+
+
+               const container = (
+                    <div>
+                         <Greeting caption="Welcoe to Reactjs Class." />
+                         <Content post="This is post one" />
+                         <Content post="This is post two" />
+                         <Content post="This is post three" />
+                         <Appreciate caption="Thank you for interesting Reactjs." />
+                    </div>    
+               );
+            
+               const root = ReactDOM.createRoot(document.getElementById("root"));
+               root.render(container);
+          </script>
+     </body>
+</html>
+<!-- 
+     function grandtotal3({total,tax,servicefee}){
+          const result = total+(total/tax)+servicefee;
+          return result;
+     }
+     console.log(grandtotal3({total:2000,tax:5,servicefee:100})); // 2500
+     console.log(grandtotal3(obj)); // 1300
+     console.log(grandtotal3({total:2000,servicefee:100})); // NaN
+     // 1. accept object as single parameter
+     // 2. define variable as from object
+
+     -The above es6 syntax is equal to 
+     function grandtotal3(paramobj){
+          const {total,tax,servicefee} = paramobj     
+
+          const result = total+(total/tax)+servicefee;
+          return result;
+     }
+     console.log(grandtotal3(obj); 
+-->
+
+<!-- {post} =  prop{
+               post
+          } -->

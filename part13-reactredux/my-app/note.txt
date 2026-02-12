@@ -1,0 +1,69 @@
+
+=>Install React
+npm create vite@latest
+my-app
+React 
+Javascript 
+
+cd myapp 
+npm install 
+npm run dev
+
+=>React Router
+https://reactrouter.com/en/main
+
+cd my-app
+npm install react-router-dom@latest (note: you can install from OS terminal as well)
+
+=>React redux
+
+     https://redux.js.org/
+     1. install (React-Redux = npm install ract-redux)
+
+
+     npm install @reduxjs/toolkit
+     npm install redux
+     (or)
+     npm install @reduxjs/toolkit react-redux
+     -----------------------------------------------------------
+     Current Version "react": "^18.3.1", (9 Jan 2025)
+     =>React Hook
+          React v16.8
+          (just for Fuctional Compoents)
+
+          useState()
+          useEffect()
+          useContext()
+
+  
+     =>React Redux (third-party library) (current version =   "react-redux": "^9.2.0")
+          global state management
+          
+          1.Store = to store Global state
+          2.Actions = Function that describe what should happen
+          3.Reducers = create logic functions to change "State"
+          4.Dispatch = Mechanism to send actions to reducers
+-----------------------------------------------------------
+
+=>React Route(v7)
+     https://reactrouter.com/start/framework/installation   
+     
+     node v20
+     react v18
+     react-dom v18
+
+     1.install
+     npm install react-router-dom@latest or npm install react-router-dom@6
+
+     2.import
+     import { BrowserRouter, Routes, Route } from "react-router";
+
+
+=>Chrom Extension
+1. go to chrome webstore
+     https://chromewebstore.google.com/
+2. download and install 
+     Redux Dev Tools
+
+=>React Redux Multi Reducer 
+     

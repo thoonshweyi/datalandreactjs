@@ -1,0 +1,300 @@
+import React,{useState,useEffect,useMemo} from "react";
+import {useDispatch,useSelector} from "react-redux"
+import {Link} from "react-router";
+
+import {fetchCustomers,toggleFavorite} from "./../store/customerSlice";
+
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
+import {faSpinner,faExclamation,faTag,faSearch,faTimes, faStar, faCircleCheck,faHeart} from "@fortawesome/free-solid-svg-icons"
+
+import banner4 from "../assets/img/banner/bannercustomer.jpg"
+
+const PAGESIZE = 6;
+
+const CustomerPage = ()=>{
+     const {loading,error,datas} = useSelector((state)=>state.customers)
+     
+     const [query,setQuery] = useState("");
+     const [page,setPage] = useState(1);
+     
+     const dispatch = useDispatch();
+
+     useEffect(()=>{
+          dispatch(fetchCustomers({limit:30}));
+     },[dispatch]);
+
+     // method 1
+     // const getFilteredCustomers = ()=>{
+     //      const getqtext = query.trim().toLowerCase();
+
+     //      if (!getqtext) return datas;
+
+     //      return datas.filter(data=>
+     //           data.name.toLowerCase().includes(getqtext) ||
+     //           data.company.toLowerCase().includes(getqtext) ||
+     //           data.city.toLowerCase().includes(getqtext)
+     //      );
+     // }
+     // const filtered = getFilteredCustomers(); // 30/6 = 5 pages
+
+     // method 2 (for speedup ui = useMemo())
+
+     const filtered = useMemo(()=>{
+
+          const getqtext = query.trim().toLowerCase();
+          
+          if (!getqtext) return datas;
+
+          return datas.filter(data=>
+               data.name.toLowerCase().includes(getqtext) ||
+               data.company.toLowerCase().includes(getqtext) ||
+               data.city.toLowerCase().includes(getqtext)
+          );
+     },[datas,query])
+
+
+
+
+     const totalPages = Math.max(1,Math.ceil(filtered.length / PAGESIZE)); // atleast 1 page
+     const pageItems = filtered.slice((page - 1) * PAGESIZE, page * PAGESIZE);
+
+     // [a,b,c,d,e,f,g,h,i,j,k,l] // page 1
+     // 0 1 2 3 4 5 6 7 8 9 10 11
+
+     // page 1 = 0 to 5  a to f
+     // page 2 = 6 to 11 g to l
+
+     // slice(0,6) = 0,1,2,3,4,5
+     // slice(6,12) = 6,7,8,9,10,11
+
+     // 1-1 * 6     , 1 * 6
+     // 0           , 6
+
+     // 2-1 * 6     , 2 * 6
+     // 6           , 12
+
+     useEffect(()=>{
+          // const result = Array(5);
+          // console.log(result); // (5) [empty × 5]
+          // console.log(result.length); // 5
+
+          // currentPage number on filter results which doesn't exist and empty
+          // if filtering changes and current page is out of range! reset to 1
+          if(page > totalPages) setPage(1);
+     },[page,totalPages]);
+
+     const searchHandler = (e)=>{
+          setQuery(e.target.value);
+     }
+
+     return (
+          <main className="bg-dark text-light">
+               {/* Banner */}
+               <section className="text-center d-flex justifiy-content-center align-items-center" style={{
+                    minHeight: "70vh",
+                    backgroundImage: `url(${banner4})`,
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                    backgroundRepeat: "no-repeat"
+               }}>
+                    <div className="container bg-dark bg-opacity-50 rounded py-5">
+                         <h1 className="display-6">Our Customers</h1>
+                         <p className="lead">Real Feedback from real people. We're proud to earn their trust.</p>
+
+                         
+                         {/* search box */}
+                         <div className="mx-auto mt-3" style={{maxWidth:560}}>
+                              <input type="text" className="form-control form-control-lg"   placeholder="Search customers by name,description or category...." value={query} onChange={searchHandler}  />
+                         </div>
+                    </div>
+               </section>
+
+               <section className="container py-5">
+
+                    {/* loading */}
+                    {loading && (
+                         <div className="text-center">
+                              <FontAwesomeIcon icon={faSpinner} spin className="text-warning"/>
+                              <p className="mt-2">Loading customers....</p>
+                         </div>
+                    )}
+
+                    {/* error */}
+                    {error && (
+                         <div className="alert alert-danger text-center">
+                              <FontAwesomeIcon icon={faExclamation} className="text-danger me-2"/>
+                              {error}
+                         </div>
+                    )}
+
+                    {!loading && !error && (
+                         <>
+                              {/* status cards */}
+                              <div className="row g-3 mb-3">
+                                   <div className="col-md-4">
+                                        <div className="h-100 bg-secondary text-center p-3">
+                                             <h6 className="opacitiy-5 mb-1">Total Customers</h6>
+                                             <div className="display-6 fw-bold">{filtered.length}</div>
+                                        </div>
+                                   </div>
+
+                                   <div className="col-md-4">
+                                        <div className="h-100 bg-secondary text-center p-3">
+                                             <h6 className="opacitiy-75 mb-1">Avg. Rating</h6>
+                                             <div className="display-6 fw-bold">{filtered.length ? (filtered.reduce((start,end)=>start+end.rating,0) / filtered.length).toFixed(1) : 0} <FontAwesomeIcon icon={faStar} className="text-warning ms-1" /></div>
+                                        </div>
+                                   </div>
+
+                                   <div className="col-md-4">
+                                        <div className="h-100 bg-secondary text-center p-3">
+                                             <h6 className="opacitiy-75 mb-1">Vreified</h6>
+                                             <div className="display-6 fw-bold"><FontAwesomeIcon icon={faCircleCheck} className="text-info me-1" /> {Math.ceil(filtered.length * 0.8)}+</div>
+                                        </div>
+                                   </div>
+                              </div>
+
+
+                              {/*  cards */}
+                              <div className="row g-4">
+
+                                   {
+                                        pageItems.map((pageItem)=>(
+                                             <div className="col-md-4 col-sm-6">
+                                                  <div className="card h-100 border-0">
+                                                       <div className="card-body">
+                                                            <div className="d-flex align-items-center">
+                                                                 <img src={pageItem.avatar} className="rounded-circle border me-3" width="55" height="55" style={{objectFit:"cover"}} alt={pageItem.name} />
+                                                                 <div>
+                                                                      <h6 className="text-dark mb-0">{pageItem.name}</h6>
+                                                                      <small className="text-muted">
+                                                                           {pageItem.title} @ {pageItem.company}
+                                                                      </small>
+                                                                      <div className="small text-muted">{pageItem.city}</div>
+                                                                 </div>
+                                                                 <button className={`btn btn-sm ms-auto ${ pageItem.favorite ? 'btn-danger': 'btn-outline-danger'}`} title={pageItem.favorite ? 'Unfavorite': 'Favorite'} onClick={()=>dispatch(toggleFavorite(pageItem.id))}>
+                                                                      <FontAwesomeIcon icon={faHeart} />
+                                                                 </button>
+                                                            </div>
+
+                                                            <p className="text-muted mt-3 mb-2" style={{minHeight:60}}>
+                                                                 {pageItem.review}
+                                                            </p>
+
+                                                            <div className="mt-auto">
+                                                                 {
+                                                                      // Array.from({length:5}).map((_,idx)=>(
+                                                                      //      <FontAwesomeIcon icon={faStar} className={ idx < pageItem.rating ? "text-warning me-1" : "text-secondary me-1" } />
+                                                                      // ))
+
+                                                                      [...Array(5)].map((_,idx)=>(
+                                                                           <FontAwesomeIcon icon={faStar} className={ idx < pageItem.rating ? "text-warning me-1" : "text-secondary me-1" } key={idx}/>
+                                                                      ))
+                                                                 }
+
+                                                            </div>
+                                                       </div>
+                                                  </div>
+                                             </div>
+                                        ))
+                                   }
+
+                                   {!pageItems.length && (
+                                        <div className="text-center py-5">No customers found.</div>
+                                   )}
+                                   
+                              </div>
+
+                              {/* pagination */}
+                              {
+                                   totalPages > 1 && (
+                                        <nav className="mt-4">
+                                             <ul className="pagination justify-content-center">
+                                                  <li className={`page-item ${page == 1 ? "disable": ""}`}>
+                                                       <button className="page-link" onClick={()=>setPage((curpage)=>Math.max(1,curpage-1))}>Prev</button>
+                                                  </li>
+                                                  {
+                                                       Array.from({length:totalPages}).map((_,idx)=>(
+                                                            <li className={`page-item ${page ===  idx+1 ? "active" : ''}`} key={idx}>
+                                                                 <button className="page-link" onClick={()=>setPage(idx+1)}>{idx+1}</button>
+                                                            </li>
+                                                       ))
+                                                  }
+                                                 
+                                                  
+                                                  <li  className={`page-item ${page == totalPages ? "disable": ""}`}>
+                                                       <button className="page-link" onClick={()=>setPage((curpage)=>Math.min(totalPages,curpage+1))}>Next</button>
+                                                  </li>
+                                             </ul>
+                                        </nav>
+                                   )
+                              }
+                         </>
+                    )}
+
+                
+
+               </section>
+          </main>
+     )
+};
+export default CustomerPage;
+
+{/* <FontAwesomeIcon icon="fa-solid fa-spinner" spin size="3x"/> */}
+
+
+// ✅ What is useMemo?
+
+// useMemo is a React Hook that helps you avoid doing expensive calculations again and again when a component re-renders.
+
+// It remembers (memoizes) the result of a function, and re-runs the function only when its dependencies change.
+
+// 🔍 What happens here?
+// 1️⃣ When query or datas changes
+
+// React will run the filtering function again.
+
+// 2️⃣ If query and datas do NOT change
+
+// React does not re-run the filter logic.
+// It simply returns the saved filtered result from memory.
+
+// 🧠 Why do we use useMemo here?
+
+// Filtering an array (especially large datasets) can be slow.
+
+// Without useMemo:
+
+// Every re-render → filter runs again
+
+// Even if query did not change
+
+// Unnecessary processing = slower UI
+
+// With useMemo:
+
+// React remembers the filtered result
+
+// Only recalculates when needed
+
+// 📦 When to use useMemo?
+
+// Use it when:
+
+// ✔ Heavy calculations
+// ✔ Large lists
+// ✔ Expensive operations (sorting, filtering, mapping)
+// ✔ Prevent unneeded re-renders
+
+// Don't use it everywhere — only where performance matters.
+
+// ✔ The REAL optimization
+
+// The optimization is:
+
+// ❌ Prevent running filter when component re-renders for other reasons
+
+// (e.g. parent component updates, state changes unrelated to datas/query)
+
+// ✔ But NOT optimizing filtering when query itself changes
+
+// Filtering must run again because the query text changed.

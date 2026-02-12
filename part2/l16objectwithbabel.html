@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+     <head>
+          <title>Working with Babel - Object</title>
+     </head>
+     <body>
+          <div id="root"></div>
+          
+          <script crossorigin="" src="https://unpkg.com/react@18/umd/react.development.js"></script>
+          <script crossorigin="" src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+          <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+          <script type="text/babel">
+
+               const getinfo = (name,city)=> ({fullname:name,hometown:city}); // extra () to distinguish between function{} and object{}
+               const container = (
+                    <div>
+                         {JSON.stringify(getinfo('su su',"yangon"))}
+                    </div>
+               );
+            
+               const root = ReactDOM.createRoot(document.getElementById("root"));
+               root.render(container);
+          </script>
+     </body>
+</html>
+
+
+<!-- 
+     *result
+     {"fullname":"su su","hometown":"yangon"} // json object format string
+-->
+
+<!-- 
+10OB
+-->

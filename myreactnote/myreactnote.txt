@@ -1,0 +1,812 @@
+=>React Redux (^9.2.0, ^2.5.1)
+
+     https://redux.js.org/
+     1. install (React-Redux = npm install ract-redux)
+
+
+     npm install @reduxjs/toolkit
+     npm install redux
+     (or)
+     npm install @reduxjs/toolkit react-redux
+     -----------------------------------------------------------
+     Current Version "react": "^18.3.1", (9 Jan 2025)
+     =>React Hook
+          React v16.8
+          (just for Fuctional Compoents)
+
+          useState()
+          useEffect()
+          useContext()
+
+     
+     =>React Redux (third-party library) (current version =   "react-redux": "^9.2.0")
+          global state management
+          
+          1.Store = to store Global state
+          2.Actions = Function that describe what should happen
+          3.Reducers = create logic functions to change "State"
+          4.Dispatch = Mechanism to send actions to reducers
+     
+     =>Quick Start Example
+          =In store > store.js 
+                    import { configureStore } from '@reduxjs/toolkit'
+                    import counterReducer from './reducer'
+
+                    export default configureStore({
+                         reducer: {
+                              counter: counterReducer
+                         }
+                    })
+
+          =In store > reducer.js 
+               import { createSlice } from '@reduxjs/toolkit'
+
+               export const counterSlice = createSlice({
+               name: 'counter',
+               initialState: {
+               value: 0
+               },
+               reducers: {
+               increment: state => {
+                    state.value += 1
+               },
+               decrement: state => {
+                    state.value -= 1
+               },
+               incrementByAmount: (state, action) => {
+                    console.log(action)
+                    state.value += action.payload
+               }
+               }
+               })
+               console.log(counterSlice);
+               // Action creators are generated for each case reducer function
+               export const { increment, decrement, incrementByAmount } = counterSlice.actions
+
+               export default counterSlice.reducer
+
+               // =In Terminal
+                    // datalandcourses\reactjsbatch1\path12\my-app\src\store> node reducer.js
+                    // {
+                    //   name: 'counter',
+                    //   reducer: [Function: reducer],
+                    //   actions: {
+                    //     increment: [Function: actionCreator] {        
+                    //       toString: [Function (anonymous)],
+                    //       type: 'counter/increment',
+                    //       match: [Function (anonymous)]
+                    //     },
+                    //     decrement: [Function: actionCreator] {        
+                    //       toString: [Function (anonymous)],
+                    //       type: 'counter/decrement',
+                    //       match: [Function (anonymous)]
+                    //     },
+                    //     incrementByAmount: [Function: actionCreator] {
+                    //       toString: [Function (anonymous)],
+                    //       type: 'counter/incrementByAmount',
+                    //       match: [Function (anonymous)]
+                    //     }
+                    //   },
+                    //   caseReducers: {
+                    //     increment: [Function: increment],
+                    //     decrement: [Function: decrement],
+                    //     incrementByAmount: [Function: incrementByAmount]
+                    //   },
+                    //   getInitialState: [Function: getInitialState],
+                    //   reducerPath: 'counter',
+                    //   getSelectors: [Function: getSelectors],
+                    //   selectors: {},
+                    //   selectSlice: [Function: selectSlice],
+                    //   injectInto: [Function: injectInto]
+                    // }
+
+          =In App.jsx
+               import { useState } from 'react'
+               import { useSelector, useDispatch } from 'react-redux'
+               import { decrement, increment,incrementByAmount } from './store/reducer'
+               import './App.css'
+
+               function App() {
+               console.log(useSelector(state=>state))
+
+               const count = useSelector((state) => state.counter.value)
+               const dispatch = useDispatch()
+               return (
+               <div>
+                    <div>
+                    <button onClick={() => dispatch(increment())}>Increment</button>
+                    <span>{count}</span>
+                    <button onClick={() => dispatch(decrement())}> Decrement</button>
+                    <button onClick={() => dispatch(incrementByAmount(100))}> By Amount</button>
+                    </div>
+               </div>
+               )
+               }
+               export default App
+
+
+     1. store: The Global State Container
+          The store is the centralized place where all the global state of your application is stored. It holds the current state and provides methods to access and update that state.
+
+          Purpose:
+
+          To store the global state of your application.
+          To allow components to access and update the state through Redux actions and reducers.
+
+          The configureStore function accepts a reducer property, where you define all the reducers for your application.
+          export default configureStore({
+               reducer: {
+                    counter: counterReducer,
+               },
+          });
+          Key Points:
+
+          reducer is an object where each key represents a slice of the state, and the value is the corresponding reducer.
+          Here, the counter key is associated with the counterReducer.
+          The resulting global state will look like this:
+          {
+               counter: {
+                    value: 0, // Managed by counterReducer
+               },
+          }
+
+          The state in the store is read-only, meaning you cannot modify it directly. Instead, you must use actions to make changes.
+
+     2. Actions:
+          Actions are plain JavaScript objects that describe what you want to do. They represent an event that occurs in your application.
+
+          Each action must have a type property, which tells the store what kind of action it is.
+          You can also include additional data (payload) to describe the change.
+
+     3. Reducers:
+          Reducers are pure functions that define how the state should change based on the action received.
+
+          A reducer takes the current state and an action as inputs and returns a new state.
+          The reducer is responsible for deciding how the state should be updated based on the action's type.
+
+     4. Dispatch:
+          Dispatch is the mechanism used to send an action to the store.
+
+          When you call store.dispatch(action), the action is sent to the reducer.
+          The reducer processes the action and updates the state accordingly.
+
+     Why do we need to destructure counterSlice.actions?
+          The actions object (counterSlice.actions) is automatically generated by createSlice based on the reducers you define.
+
+          Each reducer function (e.g., increment, decrement) is turned into an action creator.
+          Action creators are functions that return an action object (with type and payload).
+
+     =>Real World Example
+          1. Actions Object (Customer Requests)
+          The actions object contains all the predefined tasks (or requests) that a customer can ask for. Each task has a name and may include additional details.
+
+          2. Customer Service Role
+          The actions object acts like a menu of requests that the customer service representative (CSR) can handle. Customers can only ask for things on this menu, and the CSR ensures the request is properly formatted and passed to the responsible department.
+
+          3. Reducer as the Warehouse Worker
+          The reducer is like the warehouse worker who processes the requests from customer service.
+
+          Namespacing Actions:
+          Every action generated by the slice gets a type prefixed with the name property.
+          For example, if you name the slice counter, and define an action called increment, the action type will automatically be:
+
+
+     Is counterSlice.reducer Auto-Formatted?
+          ✅ Yes, it is automatically generated by createSlice() based on the reducer functions we define inside it.
+
+          When you create a slice using:
+          Redux Toolkit automatically generates:
+
+          Action Creators (increment, decrement, incrementByAmount).
+          A Reducer Function (counterSlice.reducer).
+          This means you don’t have to manually write the reducer logic using switch statements, like in traditional Redux.
+
+
+     =>Multi Pages Example 
+          src > pages 
+          Home.jsx, Deposit.jsx, Withdraw.jsx
+
+          =In src > store > store.js 
+               import { configureStore } from '@reduxjs/toolkit'
+               import reducer from './reducer'
+
+               export default configureStore({
+                    reducer: {
+                         account: reducer
+                    }
+               })
+          
+          =In main.jsx
+               import { StrictMode } from 'react'
+               import { createRoot } from 'react-dom/client'
+               import './index.css'
+               import App from './App.jsx'
+               import store from './store/store'
+               import { Provider } from 'react-redux'
+
+               createRoot(document.getElementById('root')).render(
+               <StrictMode>
+               <Provider store={store}>
+                    <App />
+               </Provider>
+               </StrictMode>,
+               )
+
+          =In src > store > reducer.js 
+               const initstate = {
+                    balance:0
+               }
+               function reducer(state=initstate,action){
+                    console.log(state)
+                    // console.log(action)
+                    // console.log(action.type)
+
+                    switch(action.type){
+                         case "DEPOSIT":
+                              return {balance: state.balance + action.payload}
+                         case "WITHDRAW":
+                              return {balance: state.balance - action.payload}
+                         default:
+                              return state;
+                    } 
+               }
+               export default reducer;
+
+          =In Home.jsx 
+
+               import React from "react"
+               import { use } from "react";
+               import { useSelector } from 'react-redux'
+
+               function Home(){
+                    const balance = useSelector(state=>state.account.balance); // Access State
+                    return <h1>Main Balance : {balance}</h1>
+               }
+               export default Home;
+
+          =In Deposit.jsx 
+               import React from "react"
+               import { useSelector, useDispatch } from 'react-redux'
+
+               function Deposit(){
+                    const balance = useSelector(state=>state.account.balance); // Access State
+                    const dispatch  = useDispatch();
+                    const depositHandler = (amount)=>{
+                         dispatch({type:"DEPOSIT",payload:amount})
+                    }
+                    return (
+                         <div>
+                              <h1>Main Balance : {balance}</h1>
+                              <button onClick={()=>depositHandler(10)}>Deposit</button>
+                         </div>
+                    )
+               }
+               export default Deposit;
+          
+          =In Withdraw.jsx 
+               import React from "react"
+               import { useSelector, useDispatch } from 'react-redux'
+
+               function Withdraw(){
+                    const balance = useSelector(state=>state.account.balance); // Access State
+                    const dispatch  = useDispatch();
+                    const withdrawHandler = (amount)=>{
+                         dispatch({type:"WITHDRAW",payload:amount})
+                    }
+                    return (
+                         <div>
+                              <h1>Main Balance : {balance}</h1>
+                              <button onClick={()=>withdrawHandler(10)}>Withdraw</button>
+                         </div>
+                    )
+               }
+               export default Withdraw;
+
+
+
+
+          =>How Does Redux Match a Dispatched Action to the Correct Reducer?
+               1️⃣ Dispatching an Action
+                    When you call dispatch(), you are sending an action object to Redux.
+                    Example:
+
+                    dispatch(incrementByAmount(5));
+                    The function incrementByAmount(5) generates an action like this:
+
+                    {
+                         type: "counter/incrementByAmount",
+                         payload: 5
+                    }
+                    This action has a type field ("counter/incrementByAmount") that determines which reducer function should handle it.
+
+               2️⃣ The Redux Store Passes the Action to the Root Reducer
+                    Redux does not assign actions to specific reducers directly. Instead, all reducers receive the action and check if they should handle it.
+
+                    When setting up the store, we combine multiple reducers using configureStore() from Redux Toolkit:
+
+
+                    const store = configureStore({
+                    reducer: {
+                         counter: counterReducer, // Handles "counter/*" actions
+                         user: userReducer, // Handles "user/*" actions
+                         }
+                    });
+                    Here, Redux sends every dispatched action to both reducers.
+
+               3️⃣ Each Reducer Checks if it Should Handle the Action
+                    Each reducer examines the action's type and determines whether it should process it.
+
+                    ✅ Example: Counter Slice
+
+                    const counterSlice = createSlice({
+                         name: "counter",
+                         initialState: { value: 0 },
+                         reducers: {
+                              incrementByAmount: (state, action) => {
+                                   state.value += action.payload;
+                              }
+                         }
+                    });
+                    Since the action has type: "counter/incrementByAmount", Redux knows this action belongs to the counter slice and calls the incrementByAmount function.
+
+                    ❌ Example: User Slice (Ignores Counter Actions)
+
+
+                    const userSlice = createSlice({
+                         name: "user",
+                         initialState: { name: "Guest" },
+                         reducers: {
+                              setName: (state, action) => {
+                                   state.name = action.payload;
+                              }
+                         }
+                    });
+                    The userSlice reducer will receive the action but since type: "counter/incrementByAmount" doesn't match any of its cases, it ignores it and returns the existing state.
+
+               4️⃣ Redux Updates Only the Matching Reducer’s State
+                    Once Redux finds the correct reducer function (incrementByAmount in counterSlice), it executes that function and updates only that part of the state.
+
+                    Final updated state:
+                    {
+                         counter: { value: 5 },  // ✅ Updated by counterReducer
+                         user: { name: "Guest" } // ❌ Unchanged (userReducer ignored the action)
+                    }
+
+               🔍 Key Takeaways
+                    ✅ All reducers receive every action.
+                    ✅ Each reducer decides whether to handle the action based on type.
+                    ✅ Only the matching reducer updates its part of the state.
+                    ✅ Reducers must always return a state, even if they don’t handle the action.
+
+          => How Does the Store Manage State?
+
+               The store organizes the state using the key provided in reducer: { counter: counterReducer }.
+
+                    🔹 This means Redux will store state like this:
+
+                    {
+                    counter: { value: 0 }  // 👈 "counter" key is used in Redux state
+                    }
+                    🔹 So, when accessing state, we must include this key (counter):
+
+                    javascript
+                    Copy
+                    Edit
+                    const count = useSelector(state => state.counter.value);
+          => How name in createSlice() Works
+
+          What Does name: 'counter' Do?
+          🔹 The name value does not affect how state is structured, but it is used to automatically generate action types.
+
+          For example, calling:
+
+          dispatch(increment());
+          Will generate an action:
+
+          { type: "counter/increment" }
+          Likewise, calling:
+
+
+          dispatch(decrement());
+          Will generate:
+
+
+          { type: "counter/decrement" }
+          ✅ Conclusion:
+
+          The name value is only used to generate action type names.
+          It does not affect how Redux structures state (that depends on the keys in configureStore()).
+
+     =>Chrom Extension
+          1. go to chrome webstore
+               https://chromewebstore.google.com/
+          2. download and install 
+               Redux Dev Tools
+
+     =>Multi Reducer 
+          =>In store.js
+               
+               import { configureStore } from '@reduxjs/toolkit'
+               import reducer from './reducer'
+               import reducerforloan from './reducerforloan'
+
+               export default configureStore({
+                    reducer: {
+                         account: reducer,
+                         loan:reducerforloan
+                    }
+               })
+
+          =In reducerforloan.js
+               const initialState = {
+                    loan:false
+               }
+
+               function reducerforloan(state=initialState,action){
+                    switch(action.type){
+                         case "APPLY":
+                              return {loan:true}
+                         default:
+                              return state
+                    }
+               }
+               export default reducerforloan;
+
+          =In Home.jsx 
+               import React from "react"
+               import { use } from "react";
+               import { useSelector,useDispatch } from 'react-redux'
+
+               function Home(){
+                    const balance = useSelector(state=>state.account.balance); // Access State
+                    const loan = useSelector(state=>state.loan.loan); // Access State
+
+                    const dispatch = useDispatch();
+                    const loanHandler = ()=>{
+                         dispatch({type:"APPLY"})
+                    }
+
+                    return(
+                         <div>
+                              <h1>Main Balance : {balance}</h1>
+                              <h3>{loan ? "You alerady apply loan!" : "Do you want Loan from bank? " }</h3>
+                              <button type="button" onClick={()=>loanHandler()} disabled={loan ? 'true' : ''}>{loan ? "Loan Applied" : "Apply Loan"}</button>
+                         </div>
+                    )
+               }
+               export default Home;
+
+          =In Withtdraw.jsx 
+               import React from "react"
+               import { useSelector, useDispatch } from 'react-redux'
+
+               function Withdraw(){
+                    const balance = useSelector(state=>state.account.balance); // Access State
+                    const loan = useSelector(state=>state.loan.loan); // Access State
+                    
+                    
+                    const dispatch  = useDispatch();
+                    const withdrawHandler = (amount)=>{
+                         dispatch({type:"WITHDRAW",payload:amount})
+                    }
+                    return (
+                         <div>
+                              <h1>Main Balance : {balance}</h1>
+                              <h3>{loan ? "You alerady apply loan!" : "Do you want Loan from bank? " }</h3>
+                              <button onClick={()=>withdrawHandler(10)}>Withdraw</button>
+                         </div>
+                    )
+               }
+               export default Withdraw;
+
+     =>String State 
+
+          =In store.js
+               // import {configureStore} from "@reduxjs/toolkit"
+               // import reducer from "./reducer"
+
+               // export default configureStore({
+               //   reducer:{
+               //      todo: reducer
+               //   }   
+               // })
+
+
+               import {configureStore} from "@reduxjs/toolkit"
+               import reducer from "./reducer"
+
+               const store =  configureStore({
+               reducer:{
+                    todo: reducer
+               }   
+               })
+
+               export default store;
+
+
+          =In reducer.js 
+               const initialState = {
+                    task : "Nothing to do"
+               }
+
+               function reducer(state = initialState,action){    
+                    switch(action.type){
+                         case "READ":
+                              return {task:"Aung Aung is Article reading"}
+                         case "WRITE":
+                              return {task:"Aung Aung is Article writing"}
+                         default:
+                              return state;
+                    }
+               }
+               export default reducer
+
+          =In taskfun.js 
+               const readarticle = (state)=>{
+                    return {
+                         type: "READ",
+                         payload:state
+                    }
+               }
+
+               const writearticle = (state)=>{
+                    return {
+                         type: "WRITE",
+                         payload:state
+                    }
+               }
+
+               export {readarticle,writearticle}
+
+          =In main.jsx 
+               import { StrictMode } from 'react'
+               import { createRoot } from 'react-dom/client'
+               import './index.css'
+               import App from './App.jsx'
+               import store from "./store/store.js"
+               import {Provider} from "react-redux"
+
+               createRoot(document.getElementById('root')).render(
+                    <StrictMode>
+                    <Provider store={store}>
+                         <App /> 
+                    </Provider>
+                    </StrictMode>,
+               )
+
+          =In App.jsx
+               import { useState } from 'react'
+               import './App.css'
+               import {useSelector,useDispatch} from "react-redux"
+               import {readarticle,writearticle} from "./store/taskfun"
+
+               function App() {
+                    const todo = useSelector(state=>state.todo.task)
+                    const dispatch = useDispatch();
+
+                    return (
+                    <section>
+                         <h1>Todo: {todo}</h1>
+                         <button type='button' onClick={()=>dispatch(readarticle())}>Read Article</button>
+                         <button type='button' onClick={()=>dispatch(writearticle())} style={{marginLeft:"10px"}}>Write Article</button>
+                    </section>
+                    )
+               }
+
+               export default App
+
+     =In Single reducer, multi state 
+          =In store.js 
+               // import {configureStore} from "@reduxjs/toolkit"
+               //import {reducer,timereducer} from "./reducer"
+
+
+               // export default configureStore({
+               //   reducer:{
+               //      todo: reducer,
+               //      times:timereducer
+               //   }   
+               // })
+
+
+               import {configureStore} from "@reduxjs/toolkit"
+               import {reducer,timereducer} from "./reducer"
+
+               const store =  configureStore({
+                    reducer:{
+                         todo: reducer,
+                         times:timereducer
+                    }   
+               })
+
+               export default store;
+
+          =In reducer.js 
+               const initialState = {
+                    task : "Nothing to do",
+                    count: 0
+               }
+
+               function reducer(state = initialState,action){    
+                    switch(action.type){
+                         case "READ":
+                              return {task:"Aung Aung is reading Article."}
+                         case "WRITE":
+                              return {task:"Aung Aung is writing Article."}
+                         default:
+                              return state;
+                    }
+               }
+
+               function timereducer(state = initialState,action){    
+                    switch(action.type){
+                         case "INCREMENT":
+                              return {
+                                   // ...state,
+                                   count:state.count+1};
+                         case "DECREMENT":
+                              return {
+                                   // ...state,
+                                   count:state.count-1
+                              }
+                         default:
+                              return state;
+                    }
+               }
+               export {reducer,timereducer}
+
+          =In taskfun.js 
+               const readarticle = (state)=>{
+                    return {
+                         type: "READ",
+                         payload:state
+                    }
+               }
+
+               const writearticle = (state)=>{
+                    return {
+                         type: "WRITE",
+                         payload:state
+                    }
+               }
+
+
+               const increment = (state)=>{
+                    return {
+                         type: "INCREMENT",
+                         payload:state
+                    }
+               }
+               const decrement = (state)=>{
+                    return {
+                         type: "DECREMENT",
+                         payload:state
+                    }
+               }
+               export {readarticle,writearticle,increment,decrement}
+
+          =In App.jsx 
+               import { useState } from 'react'
+               import './App.css'
+               import {useSelector,useDispatch} from "react-redux"
+               import {readarticle,writearticle,increment,decrement} from "./store/taskfun"
+
+               function App() {
+                    const todo = useSelector(state=>state.todo.task)
+                    const times = useSelector(state=>state.times.count)
+
+                    const dispatch = useDispatch();
+
+                    return (
+                         <section>
+                              <h1>Todo: {todo} {times} already</h1>
+                              <button type='button' onClick={()=>dispatch(readarticle())}>Read Article</button>
+                              <button type='button' onClick={()=>dispatch(writearticle())} style={{marginLeft:"10px"}}>Write Article</button>
+
+                              <button type='button' onClick={()=>dispatch(increment())} style={{marginLeft:"10px"}}>Increment</button>
+                              <button type='button' onClick={()=>dispatch(decrement())} style={{marginLeft:"10px"}}>Decrement</button>
+                         </section>
+                    )
+               }
+
+               export default App
+
+
+     =>Store middleware
+          =In src > log.js
+               // const loggerMiddleware = storeAPI => next => action => {
+               //      console.log('dispatching', action)
+               //      let result = next(action)
+               //      console.log('next state', storeAPI.getState())
+               //      return result
+               // }
+
+               const log = (store) => (next) => (action) => {
+                    // console.log(store);
+                    // console.log(next);
+                    // console.log(action);            // dispatch action
+                    console.log(store.getState());  // updated status
+
+                    const result = next(action)
+                    // if(){
+                    //      return result;
+                    // }else{
+                    //      return false;
+                    // }
+
+                    return result;
+               }
+
+               export default log;
+
+               // # store
+
+               // {getState: ƒ, dispatch: ƒ}
+               // dispatch : (action, ...args) => dispatch(action, ...args)
+               // getState : ƒ getState()
+               // [[Prototype]]: Object
+
+
+               // #next 
+               // dispatch(action) {
+               //      var _a;
+               //      try {
+               //        notifying = !((_a = action == null ? void 0 : action.meta) == null ? void 0 : _a[SHOULD_AUTOBATCH]);
+               //        shouldNotifyAtEndOfTick = !notifying;…
+
+
+               // #action
+               // {type: 'counter/increment', payload: undefined}
+               // {type: 'counter/incrementByAmount', payload: 100}
+
+               // getState() 
+               // -before state
+               // {counter: {…}}counter: {value: 0}value: 0[[Prototype]]: Object[[Prototype]]: Object
+
+          =In store.js
+               import { configureStore } from '@reduxjs/toolkit'
+               import counterReducer from './reducer'
+               import log from "../middleware/log"
+
+               export default configureStore({
+               reducer: {
+               counter: counterReducer
+               },
+               //   middleware:(getDefaultMiddleware)=>getDefaultMiddleware().concat(log)
+               middleware:(getDefaultMiddleware)=> [...getDefaultMiddleware(),log]
+               })
+
+               // middleware in configureStore
+               //      configureStore automatically includes some default middleware like:
+               //      redux-thunk (for async actions)
+               //      Immutable state checks
+               //      Serializability checks
+               // The middleware option allows you to customize or add new middleware.
+               //      getDefaultMiddleware
+               //      This function returns an array of default middleware that Redux Toolkit provides.
+               //      Using .concat(log), we add a custom log middleware on top of the default ones.
+
+
+          => Redux Middleware + Redux Logger (for action log, version ^3.0.6)
+               1.install
+               https://www.npmjs.com/package/redux-logger
+               npm i --save redux-logger
+
+               2.import to store.js
+               import { createLogger } from 'redux-logger'
+
+               =In store.js 
+                    // => with Redux Logger
+                    import { configureStore } from '@reduxjs/toolkit'
+                    import counterReducer from './reducer'
+                    import { createLogger } from 'redux-logger'
+
+                    const logger = createLogger();
+                    
+                    export default configureStore({
+                         reducer: {
+                         counter: counterReducer
+                         },
+                         // middleware:(getDefaultMiddleware)=>getDefaultMiddleware().concat(logger)
+                         middleware:(getDefaultMiddleware)=> [...getDefaultMiddleware(),logger]
+                    })

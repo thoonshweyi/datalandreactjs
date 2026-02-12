@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+     <head>
+          <title>Working with Babel - Statement</title>
+     </head>
+     <body>
+          <div id="root"></div>
+          
+          <script crossorigin="" src="https://unpkg.com/react@18/umd/react.development.js"></script>
+          <script crossorigin="" src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+          <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+          <script type="text/babel">
+               const hascar = false;
+               const mycar = (
+                    <div className={hascar ? "drive":"walk"}>
+                         {hascar ? <p>I have a new car</p> : <p>I' thinking about to buy a new car</p>}
+                    </div>
+               );
+
+            
+               const root = ReactDOM.createRoot(document.getElementById("root"));
+               root.render(mycar);
+          </script>
+     </body>
+</html>
+
+<!-- 
+*Elements are displyed depending on conditions.
+<div id="root">
+     <div class="drive">
+          <p>I have a new car</p>
+     </div>
+</div>
+-----------------------
+<div id="root">
+     <div class="walk">
+          <p>I' thinking about to buy a new car</p>
+     </div>
+</div>
+-->

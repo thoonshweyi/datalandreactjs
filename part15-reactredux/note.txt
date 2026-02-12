@@ -1,0 +1,40 @@
+
+=>Install React
+npm create vite@latest
+my-app
+React 
+Javascript 
+
+cd myapp 
+npm install 
+npm run dev
+
+=>React redux
+
+     https://redux.js.org/
+     1. install (React-Redux = npm install ract-redux)
+
+
+     npm install @reduxjs/toolkit
+     npm install redux
+     (or)
+     npm install @reduxjs/toolkit react-redux
+     -----------------------------------------------------------
+     Current Version "react": "^18.3.1", (9 Jan 2025)
+     =>React Hook
+          React v16.8
+          (just for Fuctional Compoents)
+
+          useState()
+          useEffect()
+          useContext()
+
+  
+     =>React Redux (third-party library) (current version =   "react-redux": "^9.2.0")
+          global state management
+          
+          1.Store = to store Global state
+          2.Actions = Function that describe what should happen
+          3.Reducers = create logic functions to change "State"
+          4.Dispatch = Mechanism to send actions to reducers
+-----------------------------------------------------------

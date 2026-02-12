@@ -1,0 +1,17 @@
+
+=>Install React
+npm create vite@latest
+my-app
+React 
+Javascript 
+
+cd myapp 
+npm install 
+npm run dev
+
+=>React Router
+https://reactrouter.com/en/main
+
+cd my-app
+npm install react-router-dom@latest (note: you can install from OS terminal as well)
+

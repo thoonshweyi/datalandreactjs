@@ -1,0 +1,8 @@
+.removeicon{
+     width: 18px;
+     opacity: .5;
+}
+.removeicon:hover{
+     width: 20px;
+     opacity: 1;
+}

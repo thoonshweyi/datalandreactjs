@@ -1,0 +1,34 @@
+{
+     "todayposts":[
+          {
+               "src":"icon1",
+               "title":"This is new post 1",
+               "caption": "New Post"
+          },
+          {
+               "src":"icon2",
+               "title":"This is new post 2",
+               "caption": "Sport Post"
+          },
+          {
+               "src":"icon3",
+               "title":"This is new post 3",
+               "caption": "Weather Post"
+          },
+          {
+               "src":"icon4",
+               "title":"This is new post 4",
+               "caption": "New Post"
+          },
+          {
+               "src":"icon5",
+               "title":"This is new post 5",
+               "caption": "Sport Post"
+          },
+          {
+               "src":"icon6",
+               "title":"This is new post 6",
+               "caption": "Weather Post"
+          }
+     ]
+}
