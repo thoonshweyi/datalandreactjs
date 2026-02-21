@@ -105,7 +105,11 @@ const CheckoutPage = ()=>{
                formData.append("bankslip",bankSlip); // **** this name "bankslip" should match server side
 
                try{
-                    const res = await axios.post(`http://localhost:5000/api/payments/bank`,formData,{
+                    // const res = await axios.post(`http://localhost:5000/api/payments/bank`,formData,{
+                    //      headers: {"Content-Type":"multipart/form-data"}
+                    // })
+
+                    const res = await axios.post(`https://reactjsexpressapiserver.onrender.com/api/payments/bank`,formData,{
                          headers: {"Content-Type":"multipart/form-data"}
                     })
                     
@@ -156,7 +160,11 @@ const CheckoutPage = ()=>{
                setLoading(true); // start loading
 
                try{
-                    const {data} = await axios.post(`http://localhost:5000/create-payment-intent`,{
+                    // const {data} = await axios.post(`http://localhost:5000/create-payment-intent`,{
+                    //      amount: gdtotal
+                    // });
+
+                    const {data} = await axios.post(`https://reactjsexpressapiserver.onrender.com/create-payment-intent`,{
                          amount: gdtotal
                     });
                     console.log(data);

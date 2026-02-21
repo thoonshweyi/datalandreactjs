@@ -13,7 +13,8 @@ const AboutPage = ()=>{
           const fetchAboutUs = async()=>{
 
                try{
-                    const response = await fetch("http://localhost:5000/api/aboutus");
+                    // const response = await fetch("http://localhost:5000/api/aboutus");
+                    const response = await fetch("https://reactjsexpressapiserver.onrender.com/api/aboutus");
 
                     // console.log(response);
                     if(!response.ok){

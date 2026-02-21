@@ -143,9 +143,19 @@ npm install bootstrap @popperjs/core
 
 => Deploy
      => render.com (express)
+          New = Web Service
+          
+          connect your Github repo
+
+          Build Command: npm install
+          Start Command: node server.js
 
      => app.netify.com (Landing Page)
-     
+          Add New Project > Import an existing project
+          connet your Github repo
+
+          Project name: reactlanding
+          nothing special
 ------------------------------------------------------------------------------------------------------------------------
      =>🧩 Imagine a real-world example first
 
